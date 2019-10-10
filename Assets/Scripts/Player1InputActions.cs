@@ -34,26 +34,31 @@ public class Player1InputActions : IInputActionCollection
                     ""interactions"": ""Tap""
                 },
                 {
-                    ""name"": ""Unused"",
+                    ""name"": ""InitiateMove"",
+                    ""type"": ""Button"",
+                    ""id"": ""3ba8c682-0707-490a-a03b-c27f77cb9c23"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Hold""
+                },
+                {
+                    ""name"": ""PointerPosition"",
                     ""type"": ""Value"",
-                    ""id"": ""503c7d5e-c94d-480a-a0b8-04a6c1980c14"",
+                    ""id"": ""723348e4-bb87-4082-96b6-634b97d87fed"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""StopMove"",
+                    ""type"": ""Button"",
+                    ""id"": ""fba33f7b-8cd6-4f78-810c-7344b473aeef"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=1)""
                 }
             ],
             ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""978bfe49-cc26-4a3d-ab7b-7d7a29327403"",
-                    ""path"": ""<Gamepad>/leftStick"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
                 {
                     ""name"": ""WASD"",
                     ""id"": ""00ca640b-d935-4593-8157-c05846ea39b3"",
@@ -166,28 +171,6 @@ public class Player1InputActions : IInputActionCollection
                 },
                 {
                     ""name"": """",
-                    ""id"": ""c1f7a91b-d0fd-4a62-997e-7fb9b69bf235"",
-                    ""path"": ""<Gamepad>/rightStick"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Unused"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""8c8e490b-c610-4785-884f-f04217b23ca4"",
-                    ""path"": ""<Pointer>/delta"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Keyboard&Mouse;Touch"",
-                    ""action"": ""Unused"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""05f6913d-c316-48b2-a6bb-e225f14c7960"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
@@ -216,6 +199,39 @@ public class Player1InputActions : IInputActionCollection
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ddc615ba-1c4b-46aa-b1f9-b6d9d98fc138"",
+                    ""path"": ""<Pointer>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse;Touch"",
+                    ""action"": ""PointerPosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1934acc5-a72e-4af9-a19f-3f4dd09cf4b3"",
+                    ""path"": ""<Pointer>/press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse;Touch"",
+                    ""action"": ""InitiateMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""92427bf7-217c-4f4f-9de0-a93f8375cf6a"",
+                    ""path"": ""<Pointer>/press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse;Touch"",
+                    ""action"": ""StopMove"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -572,7 +588,9 @@ public class Player1InputActions : IInputActionCollection
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
-        m_Player_Unused = m_Player.FindAction("Unused", throwIfNotFound: true);
+        m_Player_InitiateMove = m_Player.FindAction("InitiateMove", throwIfNotFound: true);
+        m_Player_PointerPosition = m_Player.FindAction("PointerPosition", throwIfNotFound: true);
+        m_Player_StopMove = m_Player.FindAction("StopMove", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -637,14 +655,18 @@ public class Player1InputActions : IInputActionCollection
     private IPlayerActions m_PlayerActionsCallbackInterface;
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Fire;
-    private readonly InputAction m_Player_Unused;
+    private readonly InputAction m_Player_InitiateMove;
+    private readonly InputAction m_Player_PointerPosition;
+    private readonly InputAction m_Player_StopMove;
     public struct PlayerActions
     {
         private Player1InputActions m_Wrapper;
         public PlayerActions(Player1InputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputAction @Fire => m_Wrapper.m_Player_Fire;
-        public InputAction @Unused => m_Wrapper.m_Player_Unused;
+        public InputAction @InitiateMove => m_Wrapper.m_Player_InitiateMove;
+        public InputAction @PointerPosition => m_Wrapper.m_Player_PointerPosition;
+        public InputAction @StopMove => m_Wrapper.m_Player_StopMove;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -660,9 +682,15 @@ public class Player1InputActions : IInputActionCollection
                 Fire.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
                 Fire.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
                 Fire.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
-                Unused.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnUnused;
-                Unused.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnUnused;
-                Unused.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnUnused;
+                InitiateMove.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInitiateMove;
+                InitiateMove.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInitiateMove;
+                InitiateMove.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInitiateMove;
+                PointerPosition.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPointerPosition;
+                PointerPosition.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPointerPosition;
+                PointerPosition.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPointerPosition;
+                StopMove.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnStopMove;
+                StopMove.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnStopMove;
+                StopMove.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnStopMove;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -673,9 +701,15 @@ public class Player1InputActions : IInputActionCollection
                 Fire.started += instance.OnFire;
                 Fire.performed += instance.OnFire;
                 Fire.canceled += instance.OnFire;
-                Unused.started += instance.OnUnused;
-                Unused.performed += instance.OnUnused;
-                Unused.canceled += instance.OnUnused;
+                InitiateMove.started += instance.OnInitiateMove;
+                InitiateMove.performed += instance.OnInitiateMove;
+                InitiateMove.canceled += instance.OnInitiateMove;
+                PointerPosition.started += instance.OnPointerPosition;
+                PointerPosition.performed += instance.OnPointerPosition;
+                PointerPosition.canceled += instance.OnPointerPosition;
+                StopMove.started += instance.OnStopMove;
+                StopMove.performed += instance.OnStopMove;
+                StopMove.canceled += instance.OnStopMove;
             }
         }
     }
@@ -815,7 +849,9 @@ public class Player1InputActions : IInputActionCollection
     {
         void OnMove(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
-        void OnUnused(InputAction.CallbackContext context);
+        void OnInitiateMove(InputAction.CallbackContext context);
+        void OnPointerPosition(InputAction.CallbackContext context);
+        void OnStopMove(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

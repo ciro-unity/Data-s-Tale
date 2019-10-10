@@ -10,10 +10,15 @@ public class PlayerInputSystem : ComponentSystem, Player1InputActions.IPlayerAct
 	private float2 movementInput;
 	private bool attackInput;
 
+	//Input private variables
+	private Vector2 cursorInitialPosition;
+	private bool cursorPressed;
+
 	protected override void OnCreate()
 	{
 		player1Input = new Player1InputActions();
 
+		//Enabling the right set of bindings according to the platform
 	#if UNITY_STANDALONE || UNITY_EDITOR
 		player1Input.bindingMask = InputBinding.MaskByGroup(player1Input.KeyboardMouseScheme.bindingGroup);
 	#elif UNITY_IOS || UNITY_ANDROID
@@ -31,19 +36,19 @@ public class PlayerInputSystem : ComponentSystem, Player1InputActions.IPlayerAct
 
     protected override void OnUpdate()
     {
-		Entities.ForEach((ref Movement movement) =>
+		Entities.ForEach((ref Movement movement, ref PlayerTag playerTag) =>
 		{		
 			//Pass the values to the ECS component
+			float3 movement3 = new float3(movementInput.x, 0f, movementInput.y);
 			movement = new Movement
 			{
-				MoveAmount = movementInput,
-				SpeedMultiplier = movement.SpeedMultiplier,
+				MoveAmount = movement3,
 			};
 		});
 
 		if(attackInput)
 		{
-			Entities.ForEach((ref Attack attack) =>
+			Entities.ForEach((ref Attack attack, ref PlayerTag playerTag) =>
 			{		
 				//Pass the values to the ECS component
 				attack = new Attack
@@ -56,6 +61,9 @@ public class PlayerInputSystem : ComponentSystem, Player1InputActions.IPlayerAct
 		}
     }
 
+
+	//----------------------------------  INPUT SYSTEM LISTENERS ----------------------------------------
+
 	public void OnMove(InputAction.CallbackContext context)
 	{
 		movementInput = context.action.ReadValue<Vector2>();
@@ -66,7 +74,29 @@ public class PlayerInputSystem : ComponentSystem, Player1InputActions.IPlayerAct
 		attackInput = context.performed;
 	}
 
-	public void OnUnused(InputAction.CallbackContext context)
+	public void OnInitiateMove(InputAction.CallbackContext context)
 	{
+		if(context.performed)
+		{
+			cursorInitialPosition = Pointer.current.position.ReadValue();
+			cursorPressed = true;
+		}
+	}
+
+	public void OnPointerPosition(InputAction.CallbackContext context)
+	{
+		if(cursorPressed && context.performed)
+		{
+			movementInput = math.normalize((context.action.ReadValue<Vector2>() - cursorInitialPosition) * .1f);
+		}
+	}
+
+	public void OnStopMove(InputAction.CallbackContext context)
+	{
+		if(context.performed)
+		{
+			cursorPressed = false;
+			movementInput = float2.zero;
+		}
 	}
 }

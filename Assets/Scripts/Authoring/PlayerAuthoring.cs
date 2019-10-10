@@ -22,11 +22,11 @@ public class PlayerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 	{
 		Movement movement = World.Active.EntityManager.GetComponentData<Movement>(entityReference);
 		
-		float squareMagnitude = math.lengthsq(movement.MoveAmount);
-		float animationMult = math.min(squareMagnitude + .1f, 1f);
+		float movementSqMagnitude = math.lengthsq(movement.MoveAmount);
+		float animationMult = math.min(movementSqMagnitude + .1f, 1f);
 		
 		animator.SetFloat("Speed", animationMult);
-		if(squareMagnitude > 0f)
+		if(movementSqMagnitude > 0f)
 		{
 			animator.SetBool("IsWalking", true);
 		}
@@ -38,7 +38,6 @@ public class PlayerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 		Attack attack = World.Active.EntityManager.GetComponentData<Attack>(entityReference);
 		if(attack.IsAttacking)
 		{
-			Debug.Log("Attacked	");
 			animator.SetTrigger("Attack");
 			World.Active.EntityManager.SetComponentData<Attack>(entityReference, new Attack{IsAttacking = false}); //reset it to false
 		}
@@ -49,7 +48,8 @@ public class PlayerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 		entityReference = conversionSystem.GetPrimaryEntity(this.transform); //save a reference to the entity for syncing animations
 
         dstManager.AddComponent(entity, typeof(PlayerTag));
-		dstManager.AddComponentData(entity, new Movement { MoveAmount = new float2(), SpeedMultiplier = speed  } );
+		dstManager.AddComponentData(entity, new Movement { MoveAmount = new float3()} );
+		dstManager.AddComponentData(entity, new Speed { Value = speed} );
 		dstManager.AddComponentData(entity, new Attack {IsAttacking = false});
 		dstManager.AddComponent(entity, typeof(CopyTransformToGameObject)); //will sync MB Transform and ECS Transform
     }

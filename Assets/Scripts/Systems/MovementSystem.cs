@@ -10,17 +10,18 @@ using UnityEngine;
 public class MovementSystem : JobComponentSystem
 {
     [BurstCompile]
-    struct MovementSystemJob : IJobForEach<PhysicsVelocity, PhysicsMass, Movement, Rotation>
+    struct MovementSystemJob : IJobForEach<PhysicsVelocity, PhysicsMass, Movement, Speed, Rotation>
     {
      	public float fixedDeltaTime;
         
         public void Execute(ref PhysicsVelocity physicsVelocity,
 							ref PhysicsMass physicsMass,
 							[ReadOnly] ref Movement movement,
+							[ReadOnly] ref Speed speed,
 							ref Rotation rotation)
         {            
 			//Assign velocity
-			physicsVelocity.Linear = new float3(movement.MoveAmount.x, 0f, movement.MoveAmount.y) / fixedDeltaTime * movement.SpeedMultiplier;
+			physicsVelocity.Linear = new float3(movement.MoveAmount.x, 0f, movement.MoveAmount.y) / fixedDeltaTime * speed.Value;
 			physicsMass.InverseInertia = new float3(0,0,0); //lock rotation on X and Z
 
 			//Force rotation
