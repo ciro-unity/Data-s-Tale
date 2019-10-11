@@ -71,6 +71,8 @@ public class PlayerInputSystem : ComponentSystem, Player1InputActions.IPlayerAct
 
 	public void OnPointerMove(InputAction.CallbackContext context)
 	{
+		Debug.Log("OnPointerMove " + context.action.ReadValue<Vector2>());
+
 		switch (context.phase)
 		{
 			case InputActionPhase.Started:
@@ -87,8 +89,15 @@ public class PlayerInputSystem : ComponentSystem, Player1InputActions.IPlayerAct
 		}
 	}
 
+	public void OnTouchMove(InputAction.CallbackContext context)
+	{
+		Debug.Log("OnTouchMove " + context.action.ReadValue<Vector2>());
+		OnPointerMove(context);
+	}
+
 	public void OnFire(InputAction.CallbackContext context)
 	{
+		Debug.Log("OnFire " + context.performed);
 		attackInput = context.performed;
 	}
 }
