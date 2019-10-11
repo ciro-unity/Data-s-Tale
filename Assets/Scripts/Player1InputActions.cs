@@ -27,35 +27,19 @@ public class Player1InputActions : IInputActionCollection
                 },
                 {
                     ""name"": ""Fire"",
-                    ""type"": ""Button"",
+                    ""type"": ""Value"",
                     ""id"": ""8ce98f7a-04a1-429d-b986-724959058191"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": ""Tap""
                 },
                 {
-                    ""name"": ""InitiateMove"",
+                    ""name"": ""PointerMove"",
                     ""type"": ""Button"",
-                    ""id"": ""3ba8c682-0707-490a-a03b-c27f77cb9c23"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": ""Hold""
-                },
-                {
-                    ""name"": ""PointerPosition"",
-                    ""type"": ""Value"",
-                    ""id"": ""723348e4-bb87-4082-96b6-634b97d87fed"",
-                    ""expectedControlType"": ""Vector2"",
+                    ""id"": ""17585dec-af3e-43ee-a08d-7b12fbf09f5c"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
-                },
-                {
-                    ""name"": ""StopMove"",
-                    ""type"": ""Button"",
-                    ""id"": ""fba33f7b-8cd6-4f78-810c-7344b473aeef"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": ""Press(behavior=1)""
                 }
             ],
             ""bindings"": [
@@ -203,37 +187,70 @@ public class Player1InputActions : IInputActionCollection
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""ddc615ba-1c4b-46aa-b1f9-b6d9d98fc138"",
-                    ""path"": ""<Pointer>/position"",
+                    ""name"": ""Mouse"",
+                    ""id"": ""5461dce0-23b5-4b54-9dff-86e52ab6320b"",
+                    ""path"": ""Vector2WithOneModifier"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse;Touch"",
-                    ""action"": ""PointerPosition"",
-                    ""isComposite"": false,
+                    ""groups"": """",
+                    ""action"": ""PointerMove"",
+                    ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""1934acc5-a72e-4af9-a19f-3f4dd09cf4b3"",
-                    ""path"": ""<Pointer>/press"",
+                    ""name"": ""modifier"",
+                    ""id"": ""478a6906-fa73-40c1-88f5-4ad7f18ac95a"",
+                    ""path"": ""<Mouse>/press"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse;Touch"",
-                    ""action"": ""InitiateMove"",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""PointerMove"",
                     ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""vector2"",
+                    ""id"": ""b9ec2ecd-e55d-4100-a58e-7147082744eb"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""PointerMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Touch"",
+                    ""id"": ""25647eb1-ad75-4c32-bb75-ff3054a347e8"",
+                    ""path"": ""Vector2WithOneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PointerMove"",
+                    ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""92427bf7-217c-4f4f-9de0-a93f8375cf6a"",
-                    ""path"": ""<Pointer>/press"",
+                    ""name"": ""modifier"",
+                    ""id"": ""a30ae2d8-ec38-474d-9d0b-6d734e7098b2"",
+                    ""path"": ""<Touchscreen>/press"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse;Touch"",
-                    ""action"": ""StopMove"",
+                    ""groups"": ""Touch"",
+                    ""action"": ""PointerMove"",
                     ""isComposite"": false,
-                    ""isPartOfComposite"": false
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""vector2"",
+                    ""id"": ""6e08c2ea-158d-4245-bc73-eed77dcd9c92"",
+                    ""path"": ""<Touchscreen>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Touch"",
+                    ""action"": ""PointerMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -588,9 +605,7 @@ public class Player1InputActions : IInputActionCollection
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
-        m_Player_InitiateMove = m_Player.FindAction("InitiateMove", throwIfNotFound: true);
-        m_Player_PointerPosition = m_Player.FindAction("PointerPosition", throwIfNotFound: true);
-        m_Player_StopMove = m_Player.FindAction("StopMove", throwIfNotFound: true);
+        m_Player_PointerMove = m_Player.FindAction("PointerMove", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -655,18 +670,14 @@ public class Player1InputActions : IInputActionCollection
     private IPlayerActions m_PlayerActionsCallbackInterface;
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Fire;
-    private readonly InputAction m_Player_InitiateMove;
-    private readonly InputAction m_Player_PointerPosition;
-    private readonly InputAction m_Player_StopMove;
+    private readonly InputAction m_Player_PointerMove;
     public struct PlayerActions
     {
         private Player1InputActions m_Wrapper;
         public PlayerActions(Player1InputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputAction @Fire => m_Wrapper.m_Player_Fire;
-        public InputAction @InitiateMove => m_Wrapper.m_Player_InitiateMove;
-        public InputAction @PointerPosition => m_Wrapper.m_Player_PointerPosition;
-        public InputAction @StopMove => m_Wrapper.m_Player_StopMove;
+        public InputAction @PointerMove => m_Wrapper.m_Player_PointerMove;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -682,15 +693,9 @@ public class Player1InputActions : IInputActionCollection
                 Fire.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
                 Fire.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
                 Fire.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
-                InitiateMove.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInitiateMove;
-                InitiateMove.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInitiateMove;
-                InitiateMove.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInitiateMove;
-                PointerPosition.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPointerPosition;
-                PointerPosition.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPointerPosition;
-                PointerPosition.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPointerPosition;
-                StopMove.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnStopMove;
-                StopMove.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnStopMove;
-                StopMove.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnStopMove;
+                PointerMove.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPointerMove;
+                PointerMove.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPointerMove;
+                PointerMove.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPointerMove;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -701,15 +706,9 @@ public class Player1InputActions : IInputActionCollection
                 Fire.started += instance.OnFire;
                 Fire.performed += instance.OnFire;
                 Fire.canceled += instance.OnFire;
-                InitiateMove.started += instance.OnInitiateMove;
-                InitiateMove.performed += instance.OnInitiateMove;
-                InitiateMove.canceled += instance.OnInitiateMove;
-                PointerPosition.started += instance.OnPointerPosition;
-                PointerPosition.performed += instance.OnPointerPosition;
-                PointerPosition.canceled += instance.OnPointerPosition;
-                StopMove.started += instance.OnStopMove;
-                StopMove.performed += instance.OnStopMove;
-                StopMove.canceled += instance.OnStopMove;
+                PointerMove.started += instance.OnPointerMove;
+                PointerMove.performed += instance.OnPointerMove;
+                PointerMove.canceled += instance.OnPointerMove;
             }
         }
     }
@@ -849,9 +848,7 @@ public class Player1InputActions : IInputActionCollection
     {
         void OnMove(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
-        void OnInitiateMove(InputAction.CallbackContext context);
-        void OnPointerPosition(InputAction.CallbackContext context);
-        void OnStopMove(InputAction.CallbackContext context);
+        void OnPointerMove(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

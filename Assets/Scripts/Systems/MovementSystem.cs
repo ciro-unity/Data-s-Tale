@@ -21,7 +21,7 @@ public class MovementSystem : JobComponentSystem
 							ref Rotation rotation)
         {            
 			//Assign velocity
-			physicsVelocity.Linear = new float3(movement.MoveAmount.x, 0f, movement.MoveAmount.y) / fixedDeltaTime * speed.Value;
+			physicsVelocity.Linear = movement.MoveAmount / fixedDeltaTime * speed.Value * .01f;
 			physicsMass.InverseInertia = new float3(0,0,0); //lock rotation on X and Z
 
 			//Force rotation

@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 public class PlayerInputSystem : ComponentSystem, Player1InputActions.IPlayerActions
 {
 	private Player1InputActions player1Input;
-	private float2 movementInput;
+	private Vector2 movementInput;
 	private bool attackInput;
 
 	//Input private variables
@@ -39,7 +39,7 @@ public class PlayerInputSystem : ComponentSystem, Player1InputActions.IPlayerAct
 		Entities.ForEach((ref Movement movement, ref PlayerTag playerTag) =>
 		{		
 			//Pass the values to the ECS component
-			float3 movement3 = new float3(movementInput.x, 0f, movementInput.y);
+			Vector3 movement3 = new Vector3(movementInput.x, 0f, movementInput.y);
 			movement = new Movement
 			{
 				MoveAmount = movement3,
@@ -69,34 +69,26 @@ public class PlayerInputSystem : ComponentSystem, Player1InputActions.IPlayerAct
 		movementInput = context.action.ReadValue<Vector2>();
 	}
 
+	public void OnPointerMove(InputAction.CallbackContext context)
+	{
+		switch (context.phase)
+		{
+			case InputActionPhase.Started:
+				cursorInitialPosition = context.action.ReadValue<Vector2>();
+				break;
+
+			case InputActionPhase.Performed:
+				movementInput = math.normalizesafe((context.action.ReadValue<Vector2>() - cursorInitialPosition) * .1f);
+				break;
+
+			case InputActionPhase.Canceled:
+				movementInput = Vector2.zero;
+				break;
+		}
+	}
+
 	public void OnFire(InputAction.CallbackContext context)
 	{
 		attackInput = context.performed;
-	}
-
-	public void OnInitiateMove(InputAction.CallbackContext context)
-	{
-		if(context.performed)
-		{
-			cursorInitialPosition = Pointer.current.position.ReadValue();
-			cursorPressed = true;
-		}
-	}
-
-	public void OnPointerPosition(InputAction.CallbackContext context)
-	{
-		if(cursorPressed && context.performed)
-		{
-			movementInput = math.normalize((context.action.ReadValue<Vector2>() - cursorInitialPosition) * .1f);
-		}
-	}
-
-	public void OnStopMove(InputAction.CallbackContext context)
-	{
-		if(context.performed)
-		{
-			cursorPressed = false;
-			movementInput = float2.zero;
-		}
 	}
 }
