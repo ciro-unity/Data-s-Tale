@@ -9,9 +9,24 @@ public struct PlayerTag : IComponentData { }
 public struct EnemyTag : IComponentData { }
 
 [Serializable]
-public struct Movement : IComponentData
+public struct MovementInput : IComponentData
 {
 	public float3 MoveAmount;
+}
+
+[Serializable]
+public struct AnimationState : IComponentData
+{
+	public float Speed;
+	public bool IsWalking;
+	public bool TriggerAttack;
+	public bool TriggerTakeDamage;
+}
+
+[Serializable]
+public struct Busy : IComponentData
+{
+	public float Until; //time value 
 }
 
 [Serializable]
@@ -21,15 +36,8 @@ public struct Speed : IComponentData
 }
 
 [Serializable]
-public struct Attack : IComponentData
+public struct AttackInput : IComponentData
 {
-	public bool IsAttacking;
+	public bool Attack;
 }
-
-// [Serializable]
-// public struct HumanPlayerInput : IComponentData
-// {
-// 	public float2 MovementInput;
-// 	public bool Attack;
-// }
 

@@ -16,7 +16,6 @@ namespace UnityEngine.InputSystem.Composites
         {
             if (context.ReadValueAsButton(modifier))
 			{
-				Debug.Log("Modifier pressed");
                 return context.ReadValue<Vector2, Vector2MagnitudeComparer>(vector2);
 			}
 

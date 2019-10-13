@@ -20,27 +20,13 @@ public class PlayerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
 	private void Update()
 	{
-		Movement movement = World.Active.EntityManager.GetComponentData<Movement>(entityReference);
-		
-		float movementSqMagnitude = math.lengthsq(movement.MoveAmount);
-		float animationMult = math.min(movementSqMagnitude + .1f, 1f);
-		
-		animator.SetFloat("Speed", animationMult);
-		if(movementSqMagnitude > 0f)
-		{
-			animator.SetBool("IsWalking", true);
-		}
-		else
-		{
-			animator.SetBool("IsWalking", false);
-		}
-
-		Attack attack = World.Active.EntityManager.GetComponentData<Attack>(entityReference);
-		if(attack.IsAttacking)
-		{
-			animator.SetTrigger("Attack");
-			World.Active.EntityManager.SetComponentData<Attack>(entityReference, new Attack{IsAttacking = false}); //reset it to false
-		}
+		AnimationState animState = World.Active.EntityManager.GetComponentData<AnimationState>(entityReference);
+	
+		//transfer the values to the Animator state machine
+		animator.SetFloat("Speed", animState.Speed);
+		animator.SetBool("IsWalking", animState.IsWalking);
+		if(animState.TriggerAttack)	animator.SetTrigger("Attack");
+		if(animState.TriggerTakeDamage) animator.SetTrigger("TakeDamage");
 	}
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
@@ -48,9 +34,10 @@ public class PlayerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 		entityReference = conversionSystem.GetPrimaryEntity(this.transform); //save a reference to the entity for syncing animations
 
         dstManager.AddComponent(entity, typeof(PlayerTag));
-		dstManager.AddComponentData(entity, new Movement { MoveAmount = new float3()} );
-		dstManager.AddComponentData(entity, new Speed { Value = speed} );
-		dstManager.AddComponentData(entity, new Attack {IsAttacking = false});
+		dstManager.AddComponentData(entity, new MovementInput { MoveAmount = new float3()} );
+		dstManager.AddComponentData(entity, new Speed { Value = speed } );
+		dstManager.AddComponentData(entity, new AttackInput { Attack = false });
+		dstManager.AddComponent(entity, typeof(AnimationState));
 		dstManager.AddComponent(entity, typeof(CopyTransformToGameObject)); //will sync MB Transform and ECS Transform
     }
 }

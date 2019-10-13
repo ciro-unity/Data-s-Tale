@@ -14,14 +14,14 @@ public class EnemyAISystem : JobComponentSystem
 	{
 		playerEntityQuery = GetEntityQuery(typeof(PlayerTag), typeof(Translation));
 	}
-		
-    [BurstCompile]
+	
+	[BurstCompile]
 	[RequireComponentTag(typeof(EnemyTag))]
-    struct EnemyAISystemJob : IJobForEach<Movement, Translation>
+    struct EnemyAISystemJob : IJobForEach<MovementInput, Translation>
     {
-       public float3 playerTranslation;
+       public float3 playerTranslation;	
         
-        public void Execute(ref Movement movement, [ReadOnly] ref Translation translation)
+        public void Execute(ref MovementInput movement, [ReadOnly] ref Translation translation)
         {
             movement.MoveAmount = math.normalize(playerTranslation - translation.Value);
         }

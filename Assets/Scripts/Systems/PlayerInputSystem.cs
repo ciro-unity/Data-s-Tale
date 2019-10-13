@@ -3,7 +3,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine.InputSystem;
 
-[UpdateBefore(typeof(MovementSystem))]
+[UpdateInGroup(typeof(InitializationSystemGroup))]
 public class PlayerInputSystem : ComponentSystem, Player1InputActions.IPlayerActions
 {
 	private Player1InputActions player1Input;
@@ -36,29 +36,22 @@ public class PlayerInputSystem : ComponentSystem, Player1InputActions.IPlayerAct
 
     protected override void OnUpdate()
     {
-		Entities.ForEach((ref Movement movement, ref PlayerTag playerTag) =>
+		//Pass the values to the ECS component on the player entity
+		Entities.ForEach((ref MovementInput movement, ref AttackInput atk, ref PlayerTag playerTag) =>
 		{		
-			//Pass the values to the ECS component
 			Vector3 movement3 = new Vector3(movementInput.x, 0f, movementInput.y);
-			movement = new Movement
+			movement = new MovementInput
 			{
 				MoveAmount = movement3,
 			};
+			
+			atk = new AttackInput
+			{
+				Attack = attackInput,
+			};
 		});
 
-		if(attackInput)
-		{
-			Entities.ForEach((ref Attack attack, ref PlayerTag playerTag) =>
-			{		
-				//Pass the values to the ECS component
-				attack = new Attack
-				{
-					IsAttacking = true,
-				};
-			});
-
-			attackInput = false;
-		}
+		attackInput = false;
     }
 
 
@@ -71,7 +64,7 @@ public class PlayerInputSystem : ComponentSystem, Player1InputActions.IPlayerAct
 
 	public void OnPointerMove(InputAction.CallbackContext context)
 	{
-		Debug.Log("OnPointerMove " + context.action.ReadValue<Vector2>());
+		//Debug.Log("OnPointerMove " + context.action.ReadValue<Vector2>());
 
 		switch (context.phase)
 		{
@@ -91,13 +84,15 @@ public class PlayerInputSystem : ComponentSystem, Player1InputActions.IPlayerAct
 
 	public void OnTouchMove(InputAction.CallbackContext context)
 	{
-		Debug.Log("OnTouchMove " + context.action.ReadValue<Vector2>());
+		//Debug.Log("OnTouchMove " + context.action.ReadValue<Vector2>());
+		
 		OnPointerMove(context);
 	}
 
 	public void OnFire(InputAction.CallbackContext context)
 	{
-		Debug.Log("OnFire " + context.performed);
+		//Debug.Log("OnFire " + context.performed);
+
 		attackInput = context.performed;
 	}
 }

@@ -12,8 +12,8 @@ public class EnemyAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 	public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
         dstManager.AddComponent(entity, typeof(EnemyTag));
-		dstManager.AddComponentData(entity, new Movement { MoveAmount = new float3()} );
+		dstManager.AddComponentData(entity, new MovementInput { MoveAmount = new float3()} );
 		dstManager.AddComponentData(entity, new Speed { Value = speed} );
-		dstManager.AddComponentData(entity, new Attack {IsAttacking = false});
+		dstManager.AddComponentData(entity, new AttackInput {Attack = false});
     }
 }

@@ -10,14 +10,15 @@ using UnityEngine;
 public class MovementSystem : JobComponentSystem
 {
     [BurstCompile]
-    struct MovementSystemJob : IJobForEach<PhysicsVelocity, PhysicsMass, Movement, Speed, Rotation>
+	[ExcludeComponent(typeof(Busy))]
+    struct MovementSystemJob : IJobForEach<MovementInput, Speed, PhysicsVelocity, PhysicsMass, Rotation>
     {
      	public float fixedDeltaTime;
         
-        public void Execute(ref PhysicsVelocity physicsVelocity,
-							ref PhysicsMass physicsMass,
-							[ReadOnly] ref Movement movement,
+        public void Execute([ReadOnly] ref MovementInput movement,
 							[ReadOnly] ref Speed speed,
+							ref PhysicsVelocity physicsVelocity,
+							ref PhysicsMass physicsMass,
 							ref Rotation rotation)
         {            
 			//Assign velocity
