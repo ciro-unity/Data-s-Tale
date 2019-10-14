@@ -6,13 +6,13 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using static Unity.Mathematics.math;
 
+[DisableAutoCreation]
 public class EnemyAISystem : JobComponentSystem
 {
-	private EntityQuery playerEntityQuery;
-
 	protected override void OnCreate()
 	{
-		playerEntityQuery = GetEntityQuery(typeof(PlayerTag), typeof(Translation));
+		//This would make it so that if there is no entity with a PlayerTag, this system is not even run
+		RequireSingletonForUpdate<PlayerTag>();
 	}
 	
 	[BurstCompile]
@@ -32,10 +32,8 @@ public class EnemyAISystem : JobComponentSystem
         var job = new EnemyAISystemJob();
 		
 		//Find the player entity, and pass its Translation component to the job
-		NativeArray<Entity> playerArray = playerEntityQuery.ToEntityArray(Allocator.TempJob);
-		Entity player = playerArray[0];
-		job.playerTranslation = World.EntityManager.GetComponentData<Translation>(player).Value;
-		playerArray.Dispose();
+		//Here we're assuming that there's only one entity with PlayerTag
+		job.playerTranslation = EntityManager.GetComponentData<Translation>(GetSingletonEntity<PlayerTag>()).Value;
 
         return job.Schedule(this, inputDependencies);
     }

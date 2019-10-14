@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 3208374965544568689}
   - component: {fileID: 3208374965545665969}
   - component: {fileID: 4324209493906984908}
-  - component: {fileID: 3229191970302109208}
   m_Layer: 0
   m_Name: Signpost
   m_TagString: Untagged
@@ -91,21 +90,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.2
+  m_Radius: 0.32
   m_Height: 2.48
   m_Direction: 1
   m_Center: {x: -0.000000074505806, y: 0.7, z: 0.00000008940697}
---- !u!136 &3229191970302109208
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3208374965547670393}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.31
-  m_Height: 1.41
-  m_Direction: 2
-  m_Center: {x: -0.12, y: 1.31, z: 0.00000008940697}

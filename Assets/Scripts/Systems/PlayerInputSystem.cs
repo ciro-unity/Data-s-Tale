@@ -37,7 +37,7 @@ public class PlayerInputSystem : ComponentSystem, Player1InputActions.IPlayerAct
     protected override void OnUpdate()
     {
 		//Pass the values to the ECS component on the player entity
-		Entities.ForEach((ref MovementInput movement, ref AttackInput atk, ref PlayerTag playerTag) =>
+		Entities.WithNone<Busy>().ForEach((ref MovementInput movement, ref AttackInput atk, ref PlayerTag playerTag) =>
 		{		
 			Vector3 movement3 = new Vector3(movementInput.x, 0f, movementInput.y);
 			movement = new MovementInput

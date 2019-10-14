@@ -4,7 +4,6 @@ using Unity.Entities;
 using Unity.Jobs;
 using UnityEngine;
 
-[UpdateAfter(typeof(PlayerInputSystem))]
 public class AttackSystem : JobComponentSystem
 {
     EndSimulationEntityCommandBufferSystem m_EntityCommandBufferSystem;

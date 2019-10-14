@@ -9,6 +9,7 @@ using Unity.Physics;
 public class PlayerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 {
     public float speed = 1f;
+	public int initialHealth = 50;
 	
 	private Entity entityReference;
 	private Animator animator;
@@ -39,5 +40,6 @@ public class PlayerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 		dstManager.AddComponentData(entity, new AttackInput { Attack = false });
 		dstManager.AddComponent(entity, typeof(AnimationState));
 		dstManager.AddComponent(entity, typeof(CopyTransformToGameObject)); //will sync MB Transform and ECS Transform
+		dstManager.AddComponentData(entity, new Health { Current = initialHealth, FullHealth = initialHealth } );
     }
 }

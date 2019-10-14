@@ -15,6 +15,18 @@ public struct MovementInput : IComponentData
 }
 
 [Serializable]
+public struct AttackInput : IComponentData
+{
+	public bool Attack;
+}
+
+[Serializable]
+public struct Target : IComponentData
+{
+	public Entity Value;
+}
+
+[Serializable]
 public struct AnimationState : IComponentData
 {
 	public float Speed;
@@ -26,7 +38,7 @@ public struct AnimationState : IComponentData
 [Serializable]
 public struct Busy : IComponentData
 {
-	public float Until; //time value 
+	public float Until; //time value
 }
 
 [Serializable]
@@ -36,8 +48,17 @@ public struct Speed : IComponentData
 }
 
 [Serializable]
-public struct AttackInput : IComponentData
+public struct AlertRange : IComponentData
 {
-	public bool Attack;
+	public float RangeSq;
 }
 
+[Serializable]
+public struct Health : IComponentData
+{
+	public int Current;
+	public int FullHealth;
+}
+
+[Serializable]
+public struct IsDead : IComponentData { }
