@@ -10,7 +10,7 @@ public class AttackSystem : JobComponentSystem
 
     //[BurstCompile]
 	[ExcludeComponent(typeof(Busy))]
-	[RequireComponentTag(typeof(Target))] //require it?
+	//[RequireComponentTag(typeof(Target))] //require it?
     struct CanAttackJob : IJobForEachWithEntity<AttackInput>
     {
 		public float currentTime;
