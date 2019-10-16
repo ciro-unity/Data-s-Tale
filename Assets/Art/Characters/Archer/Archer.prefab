@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f193004f395d24e1b97a412e246610b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 8
   initialHealth: 20
   seekRange: 10
   attackRange: 3
@@ -159,7 +159,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100006, guid: 67e4903d70c3a984dbdc388e7bd027a2, type: 3}
       propertyPath: m_Name
-      value: Archer Variant
+      value: Archer
       objectReference: {fileID: 0}
     - target: {fileID: 400006, guid: 67e4903d70c3a984dbdc388e7bd027a2, type: 3}
       propertyPath: m_LocalPosition.x
@@ -210,6 +210,18 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 22100000, guid: 8e647308dfa174b03a7f4a77aa7ac85c,
         type: 2}
+    - target: {fileID: 9500000, guid: 67e4903d70c3a984dbdc388e7bd027a2, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9500000, guid: 67e4903d70c3a984dbdc388e7bd027a2, type: 3}
+      propertyPath: m_WarningMessage
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'RightEye'\n\tTransform 'LeftEye'\n\tTransform
+        'RightEye'\n\tTransform 'LeftEye'\n\tTransform 'RightEye'\n\tTransform 'LeftEye'\n\tFrom
+        animation clip 'Warrior_die'"
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 67e4903d70c3a984dbdc388e7bd027a2, type: 3}
 --- !u!1 &1346027015876531375 stripped

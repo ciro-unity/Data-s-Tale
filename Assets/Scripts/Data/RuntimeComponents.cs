@@ -12,6 +12,7 @@ public struct EnemyTag : IComponentData { }
 public struct Wanderer : IComponentData
 {
 	public Unity.Mathematics.Random RandomSeed;
+	public float3 InitialPosition;
 }
 
 [Serializable]

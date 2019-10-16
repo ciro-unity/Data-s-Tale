@@ -32,7 +32,8 @@ public class WandererAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 		dstManager.AddComponent(entity, typeof(CopyTransformToGameObject)); //will sync MB Transform and ECS Transform
 
 		uint seed = System.Convert.ToUInt32(UnityEngine.Random.Range(0, 10000));
-		dstManager.AddComponentData(entity, new Wanderer { RandomSeed = new Unity.Mathematics.Random(seed) } );
+		float3 initialPos = transform.position;
+		dstManager.AddComponentData(entity, new Wanderer { RandomSeed = new Unity.Mathematics.Random(seed), InitialPosition = initialPos } );
 		dstManager.AddComponentData(entity, new MovementInput { MoveAmount = new float3()} );
 		dstManager.AddComponentData(entity, new Speed { Value = speed } );
 	}

@@ -10,7 +10,7 @@ using UnityEngine;
 public class MovementSystem : JobComponentSystem
 {
     [BurstCompile]
-	[ExcludeComponent(typeof(Busy))]
+	//[ExcludeComponent(typeof(Busy))]
     struct MovementJob : IJobForEach<MovementInput, Speed, Translation, PhysicsVelocity, PhysicsMass, Rotation>
     {
         public void Execute([ReadOnly] ref MovementInput movement,
