@@ -16,6 +16,9 @@ public class PlayerInputSystem : ComponentSystem, Player1InputActions.IPlayerAct
 
 	protected override void OnCreate()
 	{
+		//Need to enable this one custom composite
+		InputSystem.RegisterBindingComposite<UnityEngine.InputSystem.Composites.Vector2WithOneModifier>();
+
 		player1Input = new Player1InputActions();
 
 		//Enabling the right set of bindings according to the platform

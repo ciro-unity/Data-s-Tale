@@ -172,6 +172,39 @@
                     "isPartOfComposite": false
                 },
                 {
+                    "name": "Touch",
+                    "id": "db9935eb-8689-416b-8ce3-3c490c95d2cf",
+                    "path": "Vector2WithOneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PointerMove",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "48f802f4-5321-4109-95fc-bd67fccda89e",
+                    "path": "<Touchscreen>/press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Touch",
+                    "action": "PointerMove",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "vector2",
+                    "id": "4b211e0f-5749-4b41-aba6-a85fa402650d",
+                    "path": "<Touchscreen>/primaryTouch/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Touch",
+                    "action": "PointerMove",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
                     "name": "Mouse",
                     "id": "7503d30b-6303-4141-be4e-6e899eaf2a7b",
                     "path": "Vector2WithOneModifier",
@@ -201,39 +234,6 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "PointerMove",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "Touch",
-                    "id": "db9935eb-8689-416b-8ce3-3c490c95d2cf",
-                    "path": "Vector2WithOneModifier",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TouchMove",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "modifier",
-                    "id": "48f802f4-5321-4109-95fc-bd67fccda89e",
-                    "path": "<Touchscreen>/press",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Touch",
-                    "action": "TouchMove",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "vector2",
-                    "id": "4b211e0f-5749-4b41-aba6-a85fa402650d",
-                    "path": "<Touchscreen>/primaryTouch/position",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Touch",
-                    "action": "TouchMove",
                     "isComposite": false,
                     "isPartOfComposite": true
                 }

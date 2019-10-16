@@ -83,6 +83,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: FarmHouse
       objectReference: {fileID: 0}
+    - target: {fileID: 100006, guid: 2c943da0e34b02a4ab944b5ed2278d1d, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 2c943da0e34b02a4ab944b5ed2278d1d, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 2c943da0e34b02a4ab944b5ed2278d1d, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 100004, guid: 2c943da0e34b02a4ab944b5ed2278d1d, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 400006, guid: 2c943da0e34b02a4ab944b5ed2278d1d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.1

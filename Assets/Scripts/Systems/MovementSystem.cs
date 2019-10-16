@@ -11,19 +11,23 @@ public class MovementSystem : JobComponentSystem
 {
     [BurstCompile]
 	[ExcludeComponent(typeof(Busy))]
-    struct MovementSystemJob : IJobForEach<MovementInput, Speed, PhysicsVelocity, PhysicsMass, Rotation>
+    struct MovementJob : IJobForEach<MovementInput, Speed, Translation, PhysicsVelocity, PhysicsMass, Rotation>
     {
-     	public float fixedDeltaTime;
-        
         public void Execute([ReadOnly] ref MovementInput movement,
 							[ReadOnly] ref Speed speed,
+							ref Translation translation,
 							ref PhysicsVelocity physicsVelocity,
 							ref PhysicsMass physicsMass,
 							ref Rotation rotation)
-        {            
+        {
+			//Lock the movement on the Y axis
+			float3 newTranslation = translation.Value;
+			newTranslation.y = 0f;
+			translation.Value = newTranslation;
+
 			//Assign velocity
-			physicsVelocity.Linear = movement.MoveAmount / fixedDeltaTime * speed.Value * .01f;
-			physicsMass.InverseInertia = new float3(0,0,0); //lock rotation on X and Z
+			physicsVelocity.Linear = movement.MoveAmount * speed.Value * .5f;
+			physicsMass.InverseInertia = new float3(0,1,0); //lock rotation on X and Z
 
 			//Force rotation
 			if(!physicsVelocity.Linear.Equals(float3.zero))
@@ -36,8 +40,7 @@ public class MovementSystem : JobComponentSystem
     
     protected override JobHandle OnUpdate(JobHandle inputDependencies)
     {
-        var job = new MovementSystemJob();
-		job.fixedDeltaTime = Time.fixedDeltaTime;
+        var job = new MovementJob();
         return job.Schedule(this, inputDependencies);
     }
 }

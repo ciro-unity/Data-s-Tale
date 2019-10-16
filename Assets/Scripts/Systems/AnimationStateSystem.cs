@@ -11,7 +11,7 @@ using static Unity.Mathematics.math;
 public class AnimationStateSystem : JobComponentSystem
 {
     [BurstCompile]
-    struct AnimationStateSystemJob : IJobForEach<AnimationState, MovementInput, AttackInput>
+    struct AnimationStateJob : IJobForEach<AnimationState, MovementInput, AttackInput>
     {
         
         public void Execute(ref AnimationState animationState,
@@ -33,7 +33,7 @@ public class AnimationStateSystem : JobComponentSystem
     
     protected override JobHandle OnUpdate(JobHandle inputDependencies)
     {
-        var job = new AnimationStateSystemJob();
+        var job = new AnimationStateJob();
         return job.Schedule(this, inputDependencies);
     }
 }

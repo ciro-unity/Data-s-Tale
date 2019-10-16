@@ -4,7 +4,6 @@ using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
-using static Unity.Mathematics.math;
 
 public class FindClosestTargetSystem : JobComponentSystem
 {
@@ -17,9 +16,9 @@ public class FindClosestTargetSystem : JobComponentSystem
 		RequireForUpdate(playersGroup);
 	}
 
-	//[BurstCompile]
+	[BurstCompile]
 	[RequireComponentTag(typeof(EnemyTag))]
-	struct FindClosestTargetJob : IJobForEach<Target, Translation, AlertRange>
+	struct FindClosestPlayerJob : IJobForEach<Target, Translation, AlertRange>
 	{
 		[DeallocateOnJobCompletion]
 		[ReadOnly] public NativeArray<Entity> players;
@@ -30,15 +29,17 @@ public class FindClosestTargetSystem : JobComponentSystem
 							[ReadOnly] ref Translation translation,
 							[ReadOnly] ref AlertRange alertRange)
 		{
-			float closestSqDistance = alertRange.RangeSq;
+			float closestSqDistance = alertRange.Range * alertRange.Range;
+			target.HasTarget = false;
 			for(int i=0; i<players.Length; i++)
 			{
 				//check the squared distance to this Player and see if it's under the closest one we already found
 				float currentSqDistance = math.lengthsq(positions[i].Value - translation.Value);
 				if(currentSqDistance < closestSqDistance)
 				{
-					target.Value = players[i];
+					target.Entity = players[i];
 					closestSqDistance = currentSqDistance;
+					target.HasTarget = true;
 				}
 			}
 		}
@@ -46,13 +47,11 @@ public class FindClosestTargetSystem : JobComponentSystem
     
 	protected override JobHandle OnUpdate(JobHandle inputDependencies)
 	{
-		playersGroup.AddDependency(inputDependencies);
-
 		NativeArray<Entity> players = playersGroup.ToEntityArray(Allocator.TempJob, out JobHandle handle1);
 		NativeArray<Translation> positions = playersGroup.ToComponentDataArray<Translation>(Allocator.TempJob, out JobHandle handle2);
-		inputDependencies = JobHandle.CombineDependencies(handle1, handle2);
+		inputDependencies = JobHandle.CombineDependencies(inputDependencies, handle1, handle2);
 
-		var job = new FindClosestTargetJob()
+		var job = new FindClosestPlayerJob()
 		{
 			players = players,
 			positions = positions,

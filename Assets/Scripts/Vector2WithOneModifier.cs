@@ -4,9 +4,6 @@ using UnityEditor;
 
 namespace UnityEngine.InputSystem.Composites
 {
-#if UNITY_EDITOR
-	[InitializeOnLoad]
-#endif
     public class Vector2WithOneModifier : InputBindingComposite<Vector2>
     {
         [InputControl(layout = "Modifier")] public int modifier;
@@ -27,18 +24,5 @@ namespace UnityEngine.InputSystem.Composites
             var value = ReadValue(ref context);
             return value.magnitude;
         }
-		
-	#if UNITY_EDITOR
-		static Vector2WithOneModifier()
-		{
-			Register();
-		}
-	#endif
-	
-		[RuntimeInitializeOnLoadMethod]
-		private static void Register()
-		{
-			InputSystem.RegisterBindingComposite<Vector2WithOneModifier>();
-		}
     }
 }
