@@ -15,7 +15,7 @@ MonoBehaviour:
   speed: 8
   initialHealth: 20
   attackStrength: 2
-  seekRange: 10
+  seekRange: 5
   attackRange: 3
   attackClip: {fileID: 7400000, guid: 814cf2df381d13a4693e944d85ee39b5, type: 2}
 --- !u!114 &2572632185094011029
@@ -218,11 +218,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9500000, guid: 67e4903d70c3a984dbdc388e7bd027a2, type: 3}
       propertyPath: m_WarningMessage
-      value: "\nBinding warning: Some generic clip(s) animate transforms that are
-        already bound by a Humanoid avatar. These transforms can only be changed
-        by Humanoid clips.\n\tTransform 'RightEye'\n\tTransform 'LeftEye'\n\tTransform
-        'RightEye'\n\tTransform 'LeftEye'\n\tTransform 'RightEye'\n\tTransform 'LeftEye'\n\tFrom
-        animation clip 'Warrior_die'"
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 67e4903d70c3a984dbdc388e7bd027a2, type: 3}

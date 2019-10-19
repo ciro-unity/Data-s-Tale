@@ -28,7 +28,7 @@ public class SceneLoadingSystem : JobComponentSystem
 							[ReadOnly] ref SceneBoundingVolume boundingVolume)
 		{
 			AABB sceneAABB = (AABB)boundingVolume.Value;
-			sceneAABB.Extents += new float3(15f, 0f, 15f);
+			sceneAABB.Extents += new float3(15f, 1f, 15f);
 
 			if(sceneAABB.Contains(playerPosition.Value))
 			{
@@ -47,7 +47,7 @@ public class SceneLoadingSystem : JobComponentSystem
 							[ReadOnly] ref SceneBoundingVolume boundingVolume)
 		{
 			AABB sceneAABB = (AABB)boundingVolume.Value;
-			sceneAABB.Extents += new float3(15f, 0f, 15f);
+			sceneAABB.Extents += new float3(15f, 1f, 15f);
 
 			if(!sceneAABB.Contains(playerPosition.Value))
 			{

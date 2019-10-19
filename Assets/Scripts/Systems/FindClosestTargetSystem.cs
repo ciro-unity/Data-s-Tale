@@ -92,7 +92,7 @@ public class FindClosestTargetSystem : JobComponentSystem
 	}
 
 
-	struct CheckIfTargetInRangeJob : IJobForEachWithEntity<Target, AlertRange, Translation>
+	struct CheckIfTargetInRangeJob : IJobForEachWithEntity<Target, AlertRange, Translation, MovementInput>
 	{
 		[ReadOnly] public ComponentDataFromEntity<Translation> targetTranslations;
 		public EntityCommandBuffer.Concurrent ECB;
@@ -100,13 +100,15 @@ public class FindClosestTargetSystem : JobComponentSystem
 		public void Execute(Entity entity, int index,
 							ref Target target,
 							[ReadOnly] ref AlertRange alertRange,
-							[ReadOnly] ref Translation translation)
+							[ReadOnly] ref Translation translation,
+							ref MovementInput movementInput)
 		{
 			float distanceSquared = math.lengthsq(targetTranslations[target.Entity].Value - translation.Value);
 			if(distanceSquared > alertRange.Range * alertRange.Range)
 			{
 				//target is too far, remove component
 				ECB.RemoveComponent<Target>(index, entity);
+				movementInput.MoveAmount = float3.zero; //stop the entity
 			}
 		}
 	}

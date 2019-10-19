@@ -15,8 +15,26 @@ public class AttackSystem : JobComponentSystem
         EndSimECBSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
 	}
 
+
+	[ExcludeComponent(typeof(Busy), typeof(Target))]
+	struct EmptyAttackJob : IJobForEachWithEntity<AttackInput>
+	{
+		public float currentTime;
+        public EntityCommandBuffer.Concurrent ECB;
+
+		public void Execute(Entity entity, int index,
+							ref AttackInput attackInput)
+		{
+			if(attackInput.Attack == true)
+			{
+				float busyUntil = currentTime + attackInput.AttackLength;
+				ECB.AddComponent<Busy>(index, entity, new Busy{ Until = busyUntil });
+			}
+		}
+	}
+
 	[ExcludeComponent(typeof(Busy))]
-    struct CanAttackJob : IJobForEachWithEntity<Target, AttackInput, Translation, Rotation>
+    struct SuccessfulAttackJob : IJobForEachWithEntity<Target, AttackInput, Translation, Rotation>
     {
 		public float currentTime;
 		[ReadOnly] public ComponentDataFromEntity<Translation> translationData;
@@ -31,7 +49,7 @@ public class AttackSystem : JobComponentSystem
         {
 			if(attackInput.Attack == true)
 			{
-				float busyUntil = currentTime + attackInput.AttackLength - .1f;
+				float busyUntil = currentTime + attackInput.AttackLength;
 				ECB.AddComponent<Busy>(entityIndex, entity, new Busy{ Until = busyUntil });
 				
 				//snap rotation to look at the target
@@ -40,11 +58,13 @@ public class AttackSystem : JobComponentSystem
 
 				//the target will receive damage
 				ECB.AddComponent<DealBlow>(entityIndex, entity, new DealBlow{ When = busyUntil - .4f, DamageAmount = attackInput.AttackStrength });
+				ECB.RemoveComponent<Target>(entityIndex, entity);
 			}
         }
     }
 
 	//This job just invalidates the attack input if the entity is busy
+	//This is done to prevent the AnimationStateSystem job to pickup the attack bool and play an animation
 	struct CannotAttackJob : IJobForEach<Busy, AttackInput>
 	{
 		public void Execute([ReadOnly] ref Busy busy, ref AttackInput attackInput)
@@ -55,19 +75,33 @@ public class AttackSystem : JobComponentSystem
 	
     protected override JobHandle OnUpdate(JobHandle inputDependencies)
     {
+		EntityCommandBuffer.Concurrent ecb = EndSimECBSystem.CreateCommandBuffer().ToConcurrent();
+
 		//Iterate on all entities which are busy
 		var cantJob = new CannotAttackJob();
-		JobHandle cantJobHandle = cantJob.Schedule(this, inputDependencies);
+		JobHandle job1Handle = cantJob.Schedule(this, inputDependencies);
 
-		//Now run a job on all entities that can attack
-        var canJob = new CanAttackJob();
-		canJob.currentTime = Time.time;
-		canJob.translationData = GetComponentDataFromEntity<Translation>(true);
-		canJob.ECB = EndSimECBSystem.CreateCommandBuffer().ToConcurrent();
+		//Now run a job on all entities that can attack and have a target
+        var canJob = new SuccessfulAttackJob()
+		{
+			currentTime = Time.time,
+			translationData = GetComponentDataFromEntity<Translation>(true),
+			ECB = ecb,
+		};
 
-		JobHandle canJobHandle = canJob.Schedule(this, cantJobHandle);
-		EndSimECBSystem.AddJobHandleForProducer(canJobHandle);
+		JobHandle job2Handle = canJob.Schedule(this, job1Handle);
+		EndSimECBSystem.AddJobHandleForProducer(job2Handle);
 
-        return canJobHandle;
+		//Run a job on the entities that can attack but have no valid target
+		var emptyJob = new EmptyAttackJob()
+		{
+			currentTime = Time.time,
+			ECB = ecb,
+		};
+
+		JobHandle job3Handle = emptyJob.Schedule(this, job2Handle);
+		EndSimECBSystem.AddJobHandleForProducer(job3Handle);
+
+        return job3Handle;
     }
 }

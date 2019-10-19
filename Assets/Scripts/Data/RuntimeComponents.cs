@@ -36,7 +36,6 @@ public struct AttackInput : IComponentData
 public struct Target : IComponentData
 {
 	public Entity Entity;
-	public bool HasTarget;
 }
 
 [Serializable]

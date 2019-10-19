@@ -5,6 +5,7 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 using static Unity.Mathematics.math;
+using Unity.Physics;
 
 [UpdateAfter(typeof(ResolveDamageSystem))]
 public class DeathSystem : JobComponentSystem
@@ -30,6 +31,9 @@ public class DeathSystem : JobComponentSystem
 			//remove all the components that make the entity participate in input and gameplay
 			ECB.RemoveComponent<CopyTransformToGameObject>(entityIndex, entity);
 			ECB.RemoveComponent<MovementInput>(entityIndex, entity);
+			ECB.RemoveComponent<PhysicsCollider>(entityIndex, entity);
+			ECB.RemoveComponent<PhysicsMass>(entityIndex, entity);
+			ECB.RemoveComponent<PhysicsVelocity>(entityIndex, entity);
 			ECB.RemoveComponent<AttackInput>(entityIndex, entity);
 			ECB.RemoveComponent<AttackRange>(entityIndex, entity);
 			ECB.RemoveComponent<AlertRange>(entityIndex, entity);
