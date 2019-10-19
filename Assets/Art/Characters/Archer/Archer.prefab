@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 8
   initialHealth: 20
+  attackStrength: 2
   seekRange: 10
   attackRange: 3
+  attackClip: {fileID: 7400000, guid: 814cf2df381d13a4693e944d85ee39b5, type: 2}
 --- !u!114 &2572632185094011029
 MonoBehaviour:
   m_ObjectHideFlags: 0

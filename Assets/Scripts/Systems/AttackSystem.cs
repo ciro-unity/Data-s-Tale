@@ -3,25 +3,58 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
 using UnityEngine;
+using Unity.Transforms;
+using Unity.Mathematics;
 
 public class AttackSystem : JobComponentSystem
 {
-    EndSimulationEntityCommandBufferSystem m_EntityCommandBufferSystem;
+    EndSimulationEntityCommandBufferSystem EndSimECBSystem;
+
+	protected override void OnCreate()
+	{
+        EndSimECBSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+	}
 
     //[BurstCompile]
 	[ExcludeComponent(typeof(Busy))]
-	//[RequireComponentTag(typeof(Target))] //require it?
-    struct CanAttackJob : IJobForEachWithEntity<AttackInput>
+    struct CanAttackJob : IJobForEachWithEntity<Target, AttackInput, Translation, Rotation>
     {
 		public float currentTime;
-        public EntityCommandBuffer.Concurrent m_EntityCommandBuffer;
+		[ReadOnly] public ComponentDataFromEntity<IsDead> deadData;
+		[ReadOnly] public ComponentDataFromEntity<Translation> translationData;
+        public EntityCommandBuffer.Concurrent ECB;
         
-        public void Execute(Entity entity, int entityIndex, [ReadOnly] ref AttackInput attackInput)
+        public void Execute(Entity entity,
+							int entityIndex,
+							ref Target target,
+							[ReadOnly] ref AttackInput attackInput,
+							[ReadOnly] ref Translation translation,
+							ref Rotation rotation)
         {
 			if(attackInput.Attack == true)
 			{
-				float busyUntil = currentTime + 0.88f - .1f; //TODO: not hardcode these values
-				m_EntityCommandBuffer.AddComponent<Busy>(entityIndex, entity, new Busy{Until = busyUntil});
+				float busyUntil = currentTime + attackInput.AttackLength - .1f;
+				ECB.AddComponent<Busy>(entityIndex, entity, new Busy{ Until = busyUntil });
+				
+				if(deadData.Exists(target.Entity))
+				{
+					//the target is dead
+					target.HasTarget = false;
+				}
+				else
+				{
+					if(!target.HasTarget || target.Entity == Entity.Null)
+					{
+						return;
+					}
+
+					//snap rotation to look at the target
+					float3 heading = math.normalize(translationData[target.Entity].Value - translation.Value);
+					rotation.Value = quaternion.LookRotation(heading, math.up());
+
+					//the target will receive damage
+					ECB.AddComponent<DealBlow>(entityIndex, entity, new DealBlow{ When = busyUntil - .4f, DamageAmount = attackInput.AttackStrength });
+				}
 			}
         }
     }
@@ -31,16 +64,8 @@ public class AttackSystem : JobComponentSystem
 	{
 		public void Execute([ReadOnly] ref Busy busy, ref AttackInput attackInput)
 		{
-			attackInput = new AttackInput
-			{
-				Attack = false,
-			};
+			attackInput.Attack = false;
 		}
-	}
-
-	protected override void OnCreate()
-	{
-        m_EntityCommandBufferSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
 	}
 	
     protected override JobHandle OnUpdate(JobHandle inputDependencies)
@@ -50,12 +75,17 @@ public class AttackSystem : JobComponentSystem
 		JobHandle cantJobHandle = cantJob.Schedule(this, inputDependencies);
 
 		//Now run a job on all entities that can attack
+		ComponentDataFromEntity<IsDead> deadData = GetComponentDataFromEntity<IsDead>(true);
+		ComponentDataFromEntity<Translation> translationData = GetComponentDataFromEntity<Translation>(true);
+
         var canJob = new CanAttackJob();
 		canJob.currentTime = Time.time;
-		canJob.m_EntityCommandBuffer = m_EntityCommandBufferSystem.CreateCommandBuffer().ToConcurrent();
+		canJob.deadData = deadData;
+		canJob.translationData = translationData;
+		canJob.ECB = EndSimECBSystem.CreateCommandBuffer().ToConcurrent();
 
 		JobHandle canJobHandle = canJob.Schedule(this, cantJobHandle);
-		m_EntityCommandBufferSystem.AddJobHandleForProducer(canJobHandle);
+		EndSimECBSystem.AddJobHandleForProducer(canJobHandle);
 
         return canJobHandle;
     }

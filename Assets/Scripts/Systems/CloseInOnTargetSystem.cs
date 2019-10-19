@@ -5,18 +5,21 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 
+[UpdateBefore(typeof(AttackSystem))]
 public class CloseInOnTargetSystem : JobComponentSystem
 {	
 	[BurstCompile]
 	[RequireComponentTag(typeof(EnemyTag))]
-    struct CloseInOnTargetJob : IJobForEach<MovementInput, Translation, Target, AttackRange>
+	[ExcludeComponent(typeof(Busy))]
+    struct CloseInOnTargetJob : IJobForEach<MovementInput, Translation, Target, AttackRange, AttackInput>
     {
 		[ReadOnly] public ComponentDataFromEntity<Translation> targetData;
 
         public void Execute(ref MovementInput movement,
 							[ReadOnly] ref Translation translation,
 							[ReadOnly] ref Target target,
-							[ReadOnly] ref AttackRange attackRange)
+							[ReadOnly] ref AttackRange attackRange,
+							ref AttackInput attackInput)
         {
 			if(!targetData.Exists(target.Entity) || !target.HasTarget)
 			{
@@ -32,6 +35,7 @@ public class CloseInOnTargetSystem : JobComponentSystem
 				else
 				{
 					movement.MoveAmount = float3.zero; //stops the Entity
+					attackInput.Attack = true;
 				}
 			}
         }

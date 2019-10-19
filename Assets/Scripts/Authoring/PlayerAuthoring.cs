@@ -10,7 +10,10 @@ public class PlayerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 {
     public float speed = 1f;
 	public int initialHealth = 50;
+	public int attackStrength = 7;
 	public float attackRange = 1f;
+	public float alertRange = 3f;
+	public AnimationClip attackClip;
 	
 	private Entity entityReference;
 	private Animator animator;
@@ -29,6 +32,9 @@ public class PlayerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 		animator.SetBool("IsWalking", animState.IsWalking);
 		if(animState.TriggerAttack)	animator.SetTrigger("Attack");
 		if(animState.TriggerTakeDamage) animator.SetTrigger("TakeDamage");
+		if(animState.TriggerIsDead) animator.SetTrigger("IsDead");
+
+		if(animState.TriggerIsDead) this.enabled = false;
 	}
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
@@ -41,8 +47,12 @@ public class PlayerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 		
 		dstManager.AddComponentData(entity, new MovementInput { MoveAmount = new float3()} );
 		dstManager.AddComponentData(entity, new Speed { Value = speed } );
-		dstManager.AddComponentData(entity, new AttackInput { Attack = false });
+		float atkAnimLength = attackClip.length;
+		dstManager.AddComponentData(entity, new AttackInput { Attack = false, AttackLength = atkAnimLength, AttackStrength = attackStrength });
 		dstManager.AddComponentData(entity, new AttackRange { Range = attackRange } );
+		dstManager.AddComponentData(entity, new AlertRange { Range = alertRange } );
+		dstManager.AddComponentData(entity, new Target { Entity = Entity.Null });
 		dstManager.AddComponentData(entity, new Health { Current = initialHealth, FullHealth = initialHealth } );
+		dstManager.AddBuffer<Damage>(entity);
     }
 }

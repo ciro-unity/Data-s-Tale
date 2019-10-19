@@ -9,6 +9,9 @@ public struct PlayerTag : IComponentData { }
 public struct EnemyTag : IComponentData { }
 
 [Serializable]
+public struct ProjectileTag : IComponentData { }
+
+[Serializable]
 public struct Wanderer : IComponentData
 {
 	public Unity.Mathematics.Random RandomSeed;
@@ -25,6 +28,8 @@ public struct MovementInput : IComponentData
 public struct AttackInput : IComponentData
 {
 	public bool Attack;
+	public float AttackLength;
+	public int AttackStrength;
 }
 
 [Serializable]
@@ -41,6 +46,14 @@ public struct AnimationState : IComponentData
 	public bool IsWalking;
 	public bool TriggerAttack;
 	public bool TriggerTakeDamage;
+	public bool TriggerIsDead;
+}
+
+[Serializable]
+public struct DealBlow : IComponentData
+{
+	public float When;
+	public int DamageAmount;
 }
 
 [Serializable]

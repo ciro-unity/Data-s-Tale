@@ -148,6 +148,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   initialHealth: 50
+  attackRange: 1
+  alertRange: 3
+  attackClip: {fileID: 7400000, guid: 5b28467562159df48affb3f414d8e8ea, type: 3}
 --- !u!1001 &2442481791312850193
 PrefabInstance:
   m_ObjectHideFlags: 0

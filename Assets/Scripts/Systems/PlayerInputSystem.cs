@@ -43,15 +43,9 @@ public class PlayerInputSystem : ComponentSystem, Player1InputActions.IPlayerAct
 		Entities.WithNone<Busy>().ForEach((ref MovementInput movement, ref AttackInput atk, ref PlayerTag playerTag) =>
 		{		
 			Vector3 movement3 = new Vector3(movementInput.x, 0f, movementInput.y);
-			movement = new MovementInput
-			{
-				MoveAmount = movement3,
-			};
 			
-			atk = new AttackInput
-			{
-				Attack = attackInput,
-			};
+			movement.MoveAmount = movement3;
+			atk.Attack = attackInput;
 		});
 
 		attackInput = false;
