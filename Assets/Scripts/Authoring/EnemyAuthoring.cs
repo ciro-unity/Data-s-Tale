@@ -48,7 +48,6 @@ public class EnemyAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 		dstManager.AddComponentData(entity, new Speed { Value = speed });
 		float atkAnimLength = attackClip.length;
 		dstManager.AddComponentData(entity, new AttackInput { Attack = false, AttackLength = atkAnimLength, AttackStrength = attackStrength });
-		dstManager.AddComponentData(entity, new Target { Entity = Entity.Null });
 		dstManager.AddComponentData(entity, new AlertRange { Range = seekRange });
 		dstManager.AddComponentData(entity, new AttackRange { Range = attackRange } );
 		dstManager.AddComponentData(entity, new Health { Current = initialHealth, FullHealth = initialHealth });

@@ -28,9 +28,7 @@ public class ResolveAttacksSystem : JobComponentSystem
 							[ReadOnly] ref Target target,
 							[ReadOnly] ref DealBlow dealBlow)
         {
-			if(dealBlow.When <= currentTime
-				&& target.HasTarget
-				&& target.Entity != Entity.Null)
+			if(dealBlow.When <= currentTime)
 			{
 				if(damages.Exists(target.Entity))
 				{

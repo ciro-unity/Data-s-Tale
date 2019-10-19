@@ -31,7 +31,6 @@ public class DeathSystem : JobComponentSystem
 			ECB.RemoveComponent<CopyTransformToGameObject>(entityIndex, entity);
 			ECB.RemoveComponent<MovementInput>(entityIndex, entity);
 			ECB.RemoveComponent<AttackInput>(entityIndex, entity);
-			ECB.RemoveComponent<Target>(entityIndex, entity);
 			ECB.RemoveComponent<AttackRange>(entityIndex, entity);
 			ECB.RemoveComponent<AlertRange>(entityIndex, entity);
 			ECB.RemoveComponent<Health>(entityIndex, entity); //this avoids death from happening again

@@ -15,12 +15,10 @@ public class AttackSystem : JobComponentSystem
         EndSimECBSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
 	}
 
-    //[BurstCompile]
 	[ExcludeComponent(typeof(Busy))]
     struct CanAttackJob : IJobForEachWithEntity<Target, AttackInput, Translation, Rotation>
     {
 		public float currentTime;
-		[ReadOnly] public ComponentDataFromEntity<IsDead> deadData;
 		[ReadOnly] public ComponentDataFromEntity<Translation> translationData;
         public EntityCommandBuffer.Concurrent ECB;
         
@@ -36,25 +34,12 @@ public class AttackSystem : JobComponentSystem
 				float busyUntil = currentTime + attackInput.AttackLength - .1f;
 				ECB.AddComponent<Busy>(entityIndex, entity, new Busy{ Until = busyUntil });
 				
-				if(deadData.Exists(target.Entity))
-				{
-					//the target is dead
-					target.HasTarget = false;
-				}
-				else
-				{
-					if(!target.HasTarget || target.Entity == Entity.Null)
-					{
-						return;
-					}
+				//snap rotation to look at the target
+				float3 heading = math.normalize(translationData[target.Entity].Value - translation.Value);
+				rotation.Value = quaternion.LookRotation(heading, math.up());
 
-					//snap rotation to look at the target
-					float3 heading = math.normalize(translationData[target.Entity].Value - translation.Value);
-					rotation.Value = quaternion.LookRotation(heading, math.up());
-
-					//the target will receive damage
-					ECB.AddComponent<DealBlow>(entityIndex, entity, new DealBlow{ When = busyUntil - .4f, DamageAmount = attackInput.AttackStrength });
-				}
+				//the target will receive damage
+				ECB.AddComponent<DealBlow>(entityIndex, entity, new DealBlow{ When = busyUntil - .4f, DamageAmount = attackInput.AttackStrength });
 			}
         }
     }
@@ -75,13 +60,9 @@ public class AttackSystem : JobComponentSystem
 		JobHandle cantJobHandle = cantJob.Schedule(this, inputDependencies);
 
 		//Now run a job on all entities that can attack
-		ComponentDataFromEntity<IsDead> deadData = GetComponentDataFromEntity<IsDead>(true);
-		ComponentDataFromEntity<Translation> translationData = GetComponentDataFromEntity<Translation>(true);
-
         var canJob = new CanAttackJob();
 		canJob.currentTime = Time.time;
-		canJob.deadData = deadData;
-		canJob.translationData = translationData;
+		canJob.translationData = GetComponentDataFromEntity<Translation>(true);
 		canJob.ECB = EndSimECBSystem.CreateCommandBuffer().ToConcurrent();
 
 		JobHandle canJobHandle = canJob.Schedule(this, cantJobHandle);

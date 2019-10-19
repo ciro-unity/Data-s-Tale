@@ -21,22 +21,15 @@ public class CloseInOnTargetSystem : JobComponentSystem
 							[ReadOnly] ref AttackRange attackRange,
 							ref AttackInput attackInput)
         {
-			if(!targetData.Exists(target.Entity) || !target.HasTarget)
+			Translation targetTranslation = targetData[target.Entity];
+			if(math.lengthsq(targetTranslation.Value - translation.Value) > attackRange.Range * attackRange.Range)
 			{
-				movement.MoveAmount = float3.zero; //stops the Entity
+				movement.MoveAmount = math.normalize(targetTranslation.Value - translation.Value);
 			}
 			else
 			{
-				Translation targetTranslation = targetData[target.Entity];
-				if(math.lengthsq(targetTranslation.Value - translation.Value) > attackRange.Range * attackRange.Range)
-				{
-					movement.MoveAmount = math.normalize(targetTranslation.Value - translation.Value);
-				}
-				else
-				{
-					movement.MoveAmount = float3.zero; //stops the Entity
-					attackInput.Attack = true;
-				}
+				movement.MoveAmount = float3.zero; //stops the Entity
+				attackInput.Attack = true;
 			}
         }
     }

@@ -51,7 +51,6 @@ public class PlayerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 		dstManager.AddComponentData(entity, new AttackInput { Attack = false, AttackLength = atkAnimLength, AttackStrength = attackStrength });
 		dstManager.AddComponentData(entity, new AttackRange { Range = attackRange } );
 		dstManager.AddComponentData(entity, new AlertRange { Range = alertRange } );
-		dstManager.AddComponentData(entity, new Target { Entity = Entity.Null });
 		dstManager.AddComponentData(entity, new Health { Current = initialHealth, FullHealth = initialHealth } );
 		dstManager.AddBuffer<Damage>(entity);
     }
