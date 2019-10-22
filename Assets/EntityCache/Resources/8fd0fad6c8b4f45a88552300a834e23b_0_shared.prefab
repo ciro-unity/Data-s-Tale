@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4901662415126993689}
   - component: {fileID: 4916277187039488617}
   - component: {fileID: 2536690451407551018}
+  - component: {fileID: 5743398666290580427}
   - component: {fileID: 1795486850408018833}
   - component: {fileID: 1105141864692072321}
   - component: {fileID: 7327005428716643914}
@@ -72,6 +73,27 @@ MonoBehaviour:
         z: 3298696
         w: 3006153610
     Section: 0
+--- !u!114 &5743398666290580427
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2945149727259671249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5bad6ee22b9e4d8a8a057df378aaec0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SerializedData:
+    SceneGUID:
+      Value:
+        x: 1840188920
+        y: 2773437324
+        z: 3298696
+        w: 3006153610
+    SectionIndex: 0
+    HasStreamedLOD: 0
 --- !u!114 &1795486850408018833
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -85,8 +107,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SerializedData:
-    mesh: {fileID: 4300014, guid: e2bf2f7c5c305ab458de633377353e9e, type: 3}
-    material: {fileID: 2100000, guid: 260c567ad9a8b77428a72cb45f6782ce, type: 2}
+    mesh: {fileID: 4300026, guid: e2bf2f7c5c305ab458de633377353e9e, type: 3}
+    material: {fileID: 2100000, guid: 9e69d281be69113449734e6d9434edbf, type: 2}
     subMesh: 0
     layer: 0
     castShadows: 1
@@ -104,8 +126,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SerializedData:
-    mesh: {fileID: 4300026, guid: e2bf2f7c5c305ab458de633377353e9e, type: 3}
-    material: {fileID: 2100000, guid: 9e69d281be69113449734e6d9434edbf, type: 2}
+    mesh: {fileID: 4300014, guid: e2bf2f7c5c305ab458de633377353e9e, type: 3}
+    material: {fileID: 2100000, guid: 260c567ad9a8b77428a72cb45f6782ce, type: 2}
     subMesh: 0
     layer: 0
     castShadows: 1

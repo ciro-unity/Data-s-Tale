@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.unity.2d.sprite": "1.0.0",
     "com.unity.cinemachine": "2.3.4",
     "com.unity.entities": "0.1.1-preview",
     "com.unity.ide.vscode": "1.1.2",
