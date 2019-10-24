@@ -5,7 +5,7 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 
-
+[DisableAutoCreation]
 public class SceneLoadingSystem : JobComponentSystem
 {
     EndSimulationEntityCommandBufferSystem EndSimECBSystem;
