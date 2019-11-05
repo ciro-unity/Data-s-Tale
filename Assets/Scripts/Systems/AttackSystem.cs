@@ -23,7 +23,7 @@ public class AttackSystem : JobComponentSystem
         public EntityCommandBuffer.Concurrent ECB;
 
 		public void Execute(Entity entity, int index,
-							ref AttackInput attackInput)
+							[ReadOnly] ref AttackInput attackInput)
 		{
 			if(attackInput.Attack == true)
 			{
@@ -64,7 +64,7 @@ public class AttackSystem : JobComponentSystem
     }
 
 	//This job just invalidates the attack input if the entity is busy
-	//This is done to prevent the AnimationStateSystem job to pickup the attack bool and play an animation
+	//This is done to prevent the AnimationStateSystem job to pickup the attack bool and play an animation repeatedly
 	struct CannotAttackJob : IJobForEach<Busy, AttackInput>
 	{
 		public void Execute([ReadOnly] ref Busy busy, ref AttackInput attackInput)
