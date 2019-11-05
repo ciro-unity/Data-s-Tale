@@ -18,7 +18,7 @@ public class BusySystem : JobComponentSystem
         {
 			if(busy.Until <= currentTime)
 			{
-				ECB.RemoveComponent<Busy>(entityIndex, entity); //TODO: is the entity index the right one to pass heßre??
+				ECB.RemoveComponent<Busy>(entityIndex, entity);
 			}
         }
     }

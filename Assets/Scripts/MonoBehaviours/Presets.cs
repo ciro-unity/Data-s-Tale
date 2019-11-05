@@ -11,6 +11,10 @@ public class Presets : MonoBehaviour
 		Application.targetFrameRate = -1; //phones generally pre-set max framerate to 30
 		QualitySettings.vSyncCount = 0;
 
+	#if UNITY_EDITOR
+		QualitySettings.SetQualityLevel(0);
+	#endif
+
 		//Hack: Destroy the debug object created by the SRP
         GameObject debugObject = GameObject.Find("[Debug Updater]");
 		if(debugObject != null)
