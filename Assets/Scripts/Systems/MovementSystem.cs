@@ -7,10 +7,10 @@ using Unity.Physics;
 using Unity.Transforms;
 using UnityEngine;
 
+//This systems takes care of moving characters around, applying a force to physics Entities based on their MovementInput
 public class MovementSystem : JobComponentSystem
 {
     [BurstCompile]
-	//[ExcludeComponent(typeof(Busy))]
     struct MovementJob : IJobForEach<MovementInput, Speed, Translation, PhysicsVelocity, PhysicsMass, Rotation>
     {
         public void Execute([ReadOnly] ref MovementInput movement,
@@ -20,16 +20,16 @@ public class MovementSystem : JobComponentSystem
 							ref PhysicsMass physicsMass,
 							ref Rotation rotation)
         {
-			//Lock the movement on the Y axis
+			//Reset the movement on the Y axis
 			float3 newTranslation = translation.Value;
 			newTranslation.y = 0f;
 			translation.Value = newTranslation;
 
-			//Assign velocity
+			//Assign velocity to the physics body
 			physicsVelocity.Linear = movement.MoveAmount * speed.Value * .5f;
 			physicsMass.InverseInertia = new float3(0,1,0); //lock rotation on X and Z
 
-			//Force rotation
+			//Force rotation to the direction of movement
 			if(!physicsVelocity.Linear.Equals(float3.zero))
 			{
 				float3 heading = math.normalize(physicsVelocity.Linear);

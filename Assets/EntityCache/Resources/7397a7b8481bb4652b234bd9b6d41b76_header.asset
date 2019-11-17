@@ -10,24 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2c855a652aa5d42c29e0840c878b104c, type: 3}
-  m_Name: 89742bc15335b4105abe6e30da1457bb_header
+  m_Name: 7397a7b8481bb4652b234bd9b6d41b76_header
   m_EditorClassIdentifier: 
   Sections:
   - SceneGUID:
       Value:
-        x: 481445784
-        y: 21713717
-        z: 65465253
-        w: 3145023917
+        x: 2340059447
+        y: 1447801220
+        z: 2645832370
+        w: 1739672939
     SubSectionIndex: 0
-    FileSize: 438528
-    SharedComponentCount: 16
+    FileSize: 65048
+    SharedComponentCount: 3
     BoundingVolume:
       Min:
-        x: -17.279005
+        x: -8.404423
         y: -0.3434415
-        z: -26.866096
+        z: -33.491287
       Max:
-        x: 27.267286
-        y: 5.1345415
-        z: 31.771626
+        x: -0.6658373
+        y: 3.651764
+        z: -30.41066

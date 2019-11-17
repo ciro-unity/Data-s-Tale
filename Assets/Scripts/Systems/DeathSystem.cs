@@ -17,8 +17,9 @@ public class DeathSystem : JobComponentSystem
         EndSimECBSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
 	}
 
+	//This job takes care to clean up character Entities, but leaves the connected GameObject so it can play the death animation
 	[RequireComponentTag(typeof(IsDead), typeof(Health))]
-    struct DeathJob : IJobForEachWithEntity<AnimationState>
+    struct CharacterDeathJob : IJobForEachWithEntity<AnimationState>
     {
         public EntityCommandBuffer.Concurrent ECB;
         
@@ -28,26 +29,49 @@ public class DeathSystem : JobComponentSystem
         {
 			animationState.TriggerIsDead = true;
 
-			//remove all the components that make the entity participate in input and gameplay
-			ECB.RemoveComponent<CopyTransformToGameObject>(entityIndex, entity);
-			ECB.RemoveComponent<MovementInput>(entityIndex, entity);
-			ECB.RemoveComponent<PhysicsCollider>(entityIndex, entity);
-			ECB.RemoveComponent<PhysicsMass>(entityIndex, entity);
-			ECB.RemoveComponent<PhysicsVelocity>(entityIndex, entity);
-			ECB.RemoveComponent<AttackInput>(entityIndex, entity);
-			ECB.RemoveComponent<AttackRange>(entityIndex, entity);
-			ECB.RemoveComponent<AlertRange>(entityIndex, entity);
-			ECB.RemoveComponent<Health>(entityIndex, entity); //this avoids death from happening again
+			//Entity is destroyed, but not its corresponding GameObject (which is by now playing the death animation)
+			ECB.DestroyEntity(entityIndex, entity);
+
+			//Notice that AnimationState will survive, because it's a System State Component
         }
     }
+
+	//This job will clean up "pure" object entities (no animation, no GameObject connected).
+	//The IsDead component is not actually needed here, but requested here for the sake of shortening the code,
+	//since there's no version of IJobForEachWithEntity without a component.
+	[RequireComponentTag(typeof(Health))]
+	[ExcludeComponent(typeof(AnimationState))]
+	struct ObjectDeathJob : IJobForEachWithEntity<IsDead>
+    {
+    	public EntityCommandBuffer.Concurrent ECB;
+
+		public void Execute(Entity entity,
+							int entityIndex,
+							[ReadOnly] ref IsDead isDead)
+		{
+			ECB.DestroyEntity(entityIndex, entity);
+		}
+	}
     
     protected override JobHandle OnUpdate(JobHandle inputDependencies)
     {
-        var job = new DeathJob();
-		job.ECB = EndSimECBSystem.CreateCommandBuffer().ToConcurrent();
+		//Requesting a concurrent EntityCommandBuffer that both jobs will write commands into
+		EntityCommandBuffer.Concurrent endSimECB = EndSimECBSystem.CreateCommandBuffer().ToConcurrent();
+
+        var job = new CharacterDeathJob()
+		{
+			ECB = endSimECB,
+		};
 		JobHandle handle = job.Schedule(this, inputDependencies);
 		EndSimECBSystem.AddJobHandleForProducer(handle);
 
-        return handle;
+		var job2 = new ObjectDeathJob()
+		{
+			ECB = endSimECB,
+		};
+		JobHandle handle2 = job2.Schedule(this, handle);
+		EndSimECBSystem.AddJobHandleForProducer(handle2);
+
+        return handle2;
     }
 }

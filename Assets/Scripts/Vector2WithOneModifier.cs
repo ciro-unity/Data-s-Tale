@@ -2,6 +2,8 @@
 using UnityEngine.InputSystem.Utilities;
 using UnityEditor;
 
+//Custom modifier for the InputSystem, used to create the behaviour of "tap and drag"
+//If the mouse or finger is held down, then the system reads the value of the pointer or finger
 namespace UnityEngine.InputSystem.Composites
 {
     public class Vector2WithOneModifier : InputBindingComposite<Vector2>

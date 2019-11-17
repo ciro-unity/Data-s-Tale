@@ -63,10 +63,13 @@ public class WanderSystem : JobComponentSystem
     
     protected override JobHandle OnUpdate(JobHandle inputDependencies)
     {
-        var job = new WanderSystemJob();
-		job.currentTime = Time.time;
-		job.ECB = BeginSimECBSystem.CreateCommandBuffer().ToConcurrent();
-		job.maxDist = 3f;
+		//Job 1
+        var job = new WanderSystemJob()
+		{
+			currentTime = Time.time,
+			ECB = BeginSimECBSystem.CreateCommandBuffer().ToConcurrent(),
+			maxDist = 3f,
+		};
 		
         JobHandle handle = job.Schedule(this, inputDependencies);
 		BeginSimECBSystem.AddJobHandleForProducer(handle);

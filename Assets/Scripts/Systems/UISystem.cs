@@ -1,11 +1,7 @@
-﻿using Unity.Burst;
-using Unity.Collections;
-using Unity.Entities;
-using Unity.Jobs;
-using Unity.Mathematics;
-using Unity.Transforms;
-using static Unity.Mathematics.math;
+﻿using Unity.Entities;
 
+//This system is in charge of making so that the ECS component Health belonging to the player
+//is reflected in the UI, by calling a function on the singleton class UIManager
 [UpdateBefore(typeof(ResolveDamageSystem))]
 public class UISystem : ComponentSystem
 {

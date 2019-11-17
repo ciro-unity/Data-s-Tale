@@ -39,7 +39,7 @@ public struct Target : IComponentData
 }
 
 [Serializable]
-public struct AnimationState : IComponentData
+public struct AnimationState : ISystemStateComponentData
 {
 	public float Speed;
 	public bool IsWalking;
