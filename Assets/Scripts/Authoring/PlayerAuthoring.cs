@@ -41,6 +41,7 @@ public class PlayerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 		entityReference = conversionSystem.GetPrimaryEntity(this.transform); //save a reference to the entity for syncing animations
 
         dstManager.AddComponent(entity, typeof(PlayerTag));
+		dstManager.AddComponent(entity, typeof(Score));
 		dstManager.AddComponent(entity, typeof(AnimationState));
 		dstManager.AddComponent(entity, typeof(CopyTransformToGameObject)); //will sync MB Transform and ECS Transform
 		

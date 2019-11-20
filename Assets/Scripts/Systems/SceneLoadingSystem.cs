@@ -60,6 +60,9 @@ public class SceneLoadingSystem : JobComponentSystem
 	protected override JobHandle OnUpdate(JobHandle inputDependencies)
     {
 		EntityCommandBuffer.Concurrent ecb = EndSimECBSystem.CreateCommandBuffer().ToConcurrent();
+		
+		//Fetch the translation of the Player to be used for distance calculations
+		//Note: this system assumes there's only one Player. If more than one exists, you will see errors pop up
 		Translation playerTranslation = EntityManager.GetComponentData<Translation>(GetSingletonEntity<PlayerTag>());
 
         var job = new LoadSceneJob();

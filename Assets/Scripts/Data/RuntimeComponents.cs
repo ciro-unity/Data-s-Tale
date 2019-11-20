@@ -2,14 +2,21 @@
 using Unity.Entities;
 using Unity.Mathematics;
 
+
+//----------------------------------  PLAYER-SPECIFIC ----------------------------------------
+
 [Serializable]
 public struct PlayerTag : IComponentData { }
 
-[Serializable]
-public struct EnemyTag : IComponentData { }
+public struct Score : IComponentData
+{
+	public int Value;
+}
+
+//----------------------------------  ALL CHARACTERS ----------------------------------------
 
 [Serializable]
-public struct ProjectileTag : IComponentData { }
+public struct EnemyTag : IComponentData { }
 
 [Serializable]
 public struct Wanderer : IComponentData
@@ -33,9 +40,21 @@ public struct AttackInput : IComponentData
 }
 
 [Serializable]
-public struct Target : IComponentData
+public struct Speed : IComponentData
 {
-	public Entity Entity;
+	public float Value;
+}
+
+[Serializable]
+public struct AttackRange : IComponentData
+{
+	public float Range;
+}
+
+[Serializable]
+public struct AlertRange : IComponentData
+{
+	public float Range;
 }
 
 [Serializable]
@@ -55,34 +74,19 @@ public struct DealBlow : IComponentData
 	public int DamageAmount;
 }
 
+
+//----------------------------------  ATTACKING/DAMAGING ----------------------------------------
+
+[Serializable]
+public struct Target : IComponentData
+{
+	public Entity Entity;
+}
+
 [Serializable]
 public struct Damage : IBufferElementData
 {
 	public int Amount;
-}
-
-[Serializable]
-public struct Busy : IComponentData
-{
-	public float Until; //time value
-}
-
-[Serializable]
-public struct Speed : IComponentData
-{
-	public float Value;
-}
-
-[Serializable]
-public struct AttackRange : IComponentData
-{
-	public float Range;
-}
-
-[Serializable]
-public struct AlertRange : IComponentData
-{
-	public float Range;
 }
 
 [Serializable]
@@ -94,3 +98,19 @@ public struct Health : IComponentData
 
 [Serializable]
 public struct IsDead : IComponentData { }
+
+//----------------------------------  ITEMS ----------------------------------------
+
+public struct Collectable : IComponentData
+{
+	public int Value;
+}
+
+
+//----------------------------------  GENERAL USE ----------------------------------------
+
+[Serializable]
+public struct Busy : IComponentData
+{
+	public float Until; //time value
+}
