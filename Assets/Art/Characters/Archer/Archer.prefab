@@ -18,6 +18,7 @@ MonoBehaviour:
   seekRange: 5
   attackRange: 3
   attackClip: {fileID: 7400000, guid: 814cf2df381d13a4693e944d85ee39b5, type: 2}
+  drop: {fileID: 6597534728350345480, guid: 3e3b44970603e4f588528ed03e00148b, type: 3}
 --- !u!114 &2572632185094011029
 MonoBehaviour:
   m_ObjectHideFlags: 0

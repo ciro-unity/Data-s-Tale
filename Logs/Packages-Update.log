@@ -10,3 +10,11 @@ The following packages were updated:
   com.unity.ide.vscode from version 1.0.7 to 1.1.2
   com.unity.test-framework from version 1.0.17 to 1.1.1
   com.unity.timeline from version 1.1.0 to 1.2.2
+
+=== Thu Nov 21 19:07:19 2019
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.timeline from version 1.2.2 to 1.2.6

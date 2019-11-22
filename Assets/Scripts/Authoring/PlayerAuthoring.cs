@@ -12,7 +12,6 @@ public class PlayerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 	public int initialHealth = 50;
 	public int attackStrength = 7;
 	public float attackRange = 1f;
-	public float alertRange = 3f;
 	public AnimationClip attackClip;
 	
 	private Entity entityReference;
@@ -26,7 +25,7 @@ public class PlayerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 	private void Update()
 	{
 		AnimationState animState = World.Active.EntityManager.GetComponentData<AnimationState>(entityReference);
-	
+
 		//transfer the values to the Animator state machine
 		animator.SetFloat("Speed", animState.Speed);
 		animator.SetBool("IsWalking", animState.IsWalking);
@@ -42,6 +41,7 @@ public class PlayerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 		entityReference = conversionSystem.GetPrimaryEntity(this.transform); //save a reference to the entity for syncing animations
 
         dstManager.AddComponent(entity, typeof(PlayerTag));
+		dstManager.AddComponent(entity, typeof(Score));
 		dstManager.AddComponent(entity, typeof(AnimationState));
 		dstManager.AddComponent(entity, typeof(CopyTransformToGameObject)); //will sync MB Transform and ECS Transform
 		
@@ -50,7 +50,7 @@ public class PlayerAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 		float atkAnimLength = attackClip.length;
 		dstManager.AddComponentData(entity, new AttackInput { Attack = false, AttackLength = atkAnimLength, AttackStrength = attackStrength });
 		dstManager.AddComponentData(entity, new AttackRange { Range = attackRange } );
-		dstManager.AddComponentData(entity, new AlertRange { Range = alertRange } );
+		dstManager.AddComponentData(entity, new AlertRange { Range = attackRange } );
 		dstManager.AddComponentData(entity, new Health { Current = initialHealth, FullHealth = initialHealth } );
 		dstManager.AddBuffer<Damage>(entity);
     }

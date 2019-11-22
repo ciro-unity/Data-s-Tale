@@ -11,12 +11,13 @@ GameObject:
   - component: {fileID: 3050625068212799346}
   - component: {fileID: 7323080829507607746}
   - component: {fileID: 1579917755628202315}
-  - component: {fileID: 2947619118744097965}
   - component: {fileID: 1564888558009268130}
+  - component: {fileID: 2947619118744097965}
   - component: {fileID: 5142914725709345632}
   - component: {fileID: 8203263788725664588}
   - component: {fileID: 4638306855597503514}
   - component: {fileID: 7564552369393347845}
+  - component: {fileID: 4213235143859978500}
   m_Layer: 0
   m_Name: fda2412cad8614e2283dde9a992b4827_0_shared
   m_TagString: Untagged
@@ -70,6 +71,25 @@ MonoBehaviour:
         z: 2850935682
         w: 1921299097
     Section: 0
+--- !u!114 &1564888558009268130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5598163651677074589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b0fd4427893a4a16ba0c267dfd00217, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SerializedData:
+    mesh: {fileID: -3239835658968005650, guid: 3282b809c0de74271b9d9c6cca7e59bd, type: 3}
+    material: {fileID: 2100000, guid: af91e45797f2443bd9044c9a57f38bb7, type: 2}
+    subMesh: 0
+    layer: 0
+    castShadows: 1
+    receiveShadows: 1
 --- !u!114 &2947619118744097965
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -91,7 +111,7 @@ MonoBehaviour:
         w: 1921299097
     SectionIndex: 0
     HasStreamedLOD: 0
---- !u!114 &1564888558009268130
+--- !u!114 &5142914725709345632
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -110,7 +130,7 @@ MonoBehaviour:
     layer: 0
     castShadows: 1
     receiveShadows: 1
---- !u!114 &5142914725709345632
+--- !u!114 &8203263788725664588
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -129,7 +149,7 @@ MonoBehaviour:
     layer: 0
     castShadows: 1
     receiveShadows: 1
---- !u!114 &8203263788725664588
+--- !u!114 &4638306855597503514
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -148,7 +168,7 @@ MonoBehaviour:
     layer: 0
     castShadows: 1
     receiveShadows: 1
---- !u!114 &4638306855597503514
+--- !u!114 &7564552369393347845
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -167,7 +187,7 @@ MonoBehaviour:
     layer: 0
     castShadows: 1
     receiveShadows: 1
---- !u!114 &7564552369393347845
+--- !u!114 &4213235143859978500
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

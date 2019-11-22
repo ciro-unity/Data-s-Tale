@@ -6,10 +6,10 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
-public class Player1InputActions : IInputActionCollection, IDisposable
+public class @Player1InputActions : IInputActionCollection, IDisposable
 {
     private InputActionAsset asset;
-    public Player1InputActions()
+    public @Player1InputActions()
     {
         asset = InputActionAsset.FromJson(@"{
     ""name"": ""Player1InputActions"",
@@ -344,8 +344,8 @@ public class Player1InputActions : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_TouchMove;
     public struct PlayerActions
     {
-        private Player1InputActions m_Wrapper;
-        public PlayerActions(Player1InputActions wrapper) { m_Wrapper = wrapper; }
+        private @Player1InputActions m_Wrapper;
+        public PlayerActions(@Player1InputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputAction @Fire => m_Wrapper.m_Player_Fire;
         public InputAction @PointerMove => m_Wrapper.m_Player_PointerMove;
@@ -359,34 +359,34 @@ public class Player1InputActions : IInputActionCollection, IDisposable
         {
             if (m_Wrapper.m_PlayerActionsCallbackInterface != null)
             {
-                Move.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMove;
-                Move.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMove;
-                Move.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMove;
-                Fire.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
-                Fire.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
-                Fire.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
-                PointerMove.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPointerMove;
-                PointerMove.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPointerMove;
-                PointerMove.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPointerMove;
-                TouchMove.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTouchMove;
-                TouchMove.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTouchMove;
-                TouchMove.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTouchMove;
+                @Move.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMove;
+                @Move.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMove;
+                @Move.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMove;
+                @Fire.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
+                @Fire.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
+                @Fire.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
+                @PointerMove.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPointerMove;
+                @PointerMove.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPointerMove;
+                @PointerMove.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPointerMove;
+                @TouchMove.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTouchMove;
+                @TouchMove.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTouchMove;
+                @TouchMove.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTouchMove;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
             {
-                Move.started += instance.OnMove;
-                Move.performed += instance.OnMove;
-                Move.canceled += instance.OnMove;
-                Fire.started += instance.OnFire;
-                Fire.performed += instance.OnFire;
-                Fire.canceled += instance.OnFire;
-                PointerMove.started += instance.OnPointerMove;
-                PointerMove.performed += instance.OnPointerMove;
-                PointerMove.canceled += instance.OnPointerMove;
-                TouchMove.started += instance.OnTouchMove;
-                TouchMove.performed += instance.OnTouchMove;
-                TouchMove.canceled += instance.OnTouchMove;
+                @Move.started += instance.OnMove;
+                @Move.performed += instance.OnMove;
+                @Move.canceled += instance.OnMove;
+                @Fire.started += instance.OnFire;
+                @Fire.performed += instance.OnFire;
+                @Fire.canceled += instance.OnFire;
+                @PointerMove.started += instance.OnPointerMove;
+                @PointerMove.performed += instance.OnPointerMove;
+                @PointerMove.canceled += instance.OnPointerMove;
+                @TouchMove.started += instance.OnTouchMove;
+                @TouchMove.performed += instance.OnTouchMove;
+                @TouchMove.canceled += instance.OnTouchMove;
             }
         }
     }

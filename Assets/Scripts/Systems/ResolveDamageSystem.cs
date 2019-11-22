@@ -1,11 +1,9 @@
-﻿using Unity.Burst;
-using Unity.Collections;
+﻿using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
-using Unity.Mathematics;
-using Unity.Transforms;
-using static Unity.Mathematics.math;
 
+//This system adds up all Damages on an entity and subtracts them from the Health, and adds an IsDead component if health goes below zero
+//This will trigger the intervention of DeathSystem
 [UpdateAfter(typeof(ResolveAttacksSystem))]
 public class ResolveDamageSystem : JobComponentSystem
 {

@@ -3,7 +3,11 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine.InputSystem;
 
+//This system acts as a bridge between the InputSystem (Unity classic) and the ECS world,
+//by reading input and storing it in the OnUpdate into two ECS components: AttackInput and MovementInput.
+//The value of these inputs is picked up by other ECS systems
 [UpdateInGroup(typeof(InitializationSystemGroup))]
+[AlwaysUpdateSystem]
 public class PlayerInputSystem : ComponentSystem, Player1InputActions.IPlayerActions
 {
 	private Player1InputActions player1Input;
@@ -39,7 +43,7 @@ public class PlayerInputSystem : ComponentSystem, Player1InputActions.IPlayerAct
 
     protected override void OnUpdate()
     {
-		//Pass the values to the ECS component on the player entity
+		//Pass the values to the ECS component on the player entity, only if the player is not "busy" (Busy component is present)
 		Entities.WithNone<Busy>().ForEach((ref MovementInput movement, ref AttackInput atk, ref PlayerTag playerTag) =>
 		{		
 			Vector3 movement3 = new Vector3(movementInput.x, 0f, movementInput.y);
@@ -48,6 +52,8 @@ public class PlayerInputSystem : ComponentSystem, Player1InputActions.IPlayerAct
 			atk.Attack = attackInput;
 		});
 
+		//Regardless of whether the player is busy or not, we clear the attack input.
+		//This way once it becomes free, it won't attack again as a result of a tap done during the busy phase.
 		attackInput = false;
     }
 
@@ -89,7 +95,9 @@ public class PlayerInputSystem : ComponentSystem, Player1InputActions.IPlayerAct
 	public void OnFire(InputAction.CallbackContext context)
 	{
 		//Debug.Log("OnFire " + context.performed);
-
-		attackInput = context.performed;
+		if(context.phase == InputActionPhase.Performed)
+		{
+			attackInput = context.performed;
+		}
 	}
 }

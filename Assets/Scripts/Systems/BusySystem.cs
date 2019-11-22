@@ -4,11 +4,17 @@ using Unity.Entities;
 using Unity.Jobs;
 using UnityEngine;
 
+//This system takes care of resolving waits, by checking the time on Busy components and removing them when necessary.
 public class BusySystem : JobComponentSystem
 {
     EndSimulationEntityCommandBufferSystem EndSimECBSystem;
 
-    //[BurstCompile]
+	protected override void OnCreate()
+	{
+        EndSimECBSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+	}
+    
+	//This job checks the time on Busy components and removes them when they are "expired"
     struct ResolveWaitJob : IJobForEachWithEntity<Busy>
     {
 		public float currentTime;
@@ -23,16 +29,13 @@ public class BusySystem : JobComponentSystem
         }
     }
 
-	protected override void OnCreate()
-	{
-        EndSimECBSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
-	}
-    
     protected override JobHandle OnUpdate(JobHandle inputDependencies)
     {
-        var job = new ResolveWaitJob();
-		job.currentTime = Time.time;
-		job.ECB = EndSimECBSystem.CreateCommandBuffer().ToConcurrent();
+        var job = new ResolveWaitJob()
+		{
+			currentTime = Time.time,
+			ECB = EndSimECBSystem.CreateCommandBuffer().ToConcurrent()
+		};
 
 		JobHandle jobHandle = job.Schedule(this, inputDependencies);
 		EndSimECBSystem.AddJobHandleForProducer(jobHandle);

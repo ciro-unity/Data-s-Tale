@@ -6,6 +6,7 @@ using UnityEngine;
 using Unity.Transforms;
 using Unity.Mathematics;
 
+//This system takes care of AttackInput, and produces a different result whether the Entity has a Target or not
 public class AttackSystem : JobComponentSystem
 {
     EndSimulationEntityCommandBufferSystem EndSimECBSystem;
@@ -15,7 +16,7 @@ public class AttackSystem : JobComponentSystem
         EndSimECBSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
 	}
 
-
+	//This job affects Entities that attack with no Target. This should only be possible for the player character
 	[ExcludeComponent(typeof(Busy), typeof(Target))]
 	struct EmptyAttackJob : IJobForEachWithEntity<AttackInput>
 	{
@@ -33,6 +34,7 @@ public class AttackSystem : JobComponentSystem
 		}
 	}
 
+	//This job affects entities that have a target, so they hit it
 	[ExcludeComponent(typeof(Busy))]
     struct SuccessfulAttackJob : IJobForEachWithEntity<Target, AttackInput, Translation, Rotation>
     {
@@ -49,16 +51,17 @@ public class AttackSystem : JobComponentSystem
         {
 			if(attackInput.Attack == true)
 			{
+				//The Busy component excludes the character from participating in many systems until the attack animaiton is over
 				float busyUntil = currentTime + attackInput.AttackLength;
 				ECB.AddComponent<Busy>(entityIndex, entity, new Busy{ Until = busyUntil });
 				
-				//snap rotation to look at the target
+				//Snap rotation to look at the target
 				float3 heading = math.normalize(translationData[target.Entity].Value - translation.Value);
+				heading.y = 0f;
 				rotation.Value = quaternion.LookRotation(heading, math.up());
 
-				//the target will receive damage
+				//The target will receive damage at the time set in the DealBlow component
 				ECB.AddComponent<DealBlow>(entityIndex, entity, new DealBlow{ When = busyUntil - .4f, DamageAmount = attackInput.AttackStrength });
-				ECB.RemoveComponent<Target>(entityIndex, entity);
 			}
         }
     }
@@ -75,28 +78,32 @@ public class AttackSystem : JobComponentSystem
 	
     protected override JobHandle OnUpdate(JobHandle inputDependencies)
     {
-		EntityCommandBuffer.Concurrent ecb = EndSimECBSystem.CreateCommandBuffer().ToConcurrent();
+		//Obtain an EntityCommandBuffer which all jobs will write commands into
+		EntityCommandBuffer.Concurrent EndSimECB = EndSimECBSystem.CreateCommandBuffer().ToConcurrent();
 
+		//Job 1
 		//Iterate on all entities which are busy
 		var cantJob = new CannotAttackJob();
 		JobHandle job1Handle = cantJob.Schedule(this, inputDependencies);
 
+		//Job 2
 		//Now run a job on all entities that can attack and have a target
         var canJob = new SuccessfulAttackJob()
 		{
 			currentTime = Time.time,
 			translationData = GetComponentDataFromEntity<Translation>(true),
-			ECB = ecb,
+			ECB = EndSimECB,
 		};
 
 		JobHandle job2Handle = canJob.Schedule(this, job1Handle);
 		EndSimECBSystem.AddJobHandleForProducer(job2Handle);
 
+		//Job 3
 		//Run a job on the entities that can attack but have no valid target
 		var emptyJob = new EmptyAttackJob()
 		{
 			currentTime = Time.time,
-			ECB = ecb,
+			ECB = EndSimECB,
 		};
 
 		JobHandle job3Handle = emptyJob.Schedule(this, job2Handle);

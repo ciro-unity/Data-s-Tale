@@ -2,24 +2,31 @@
 using UnityEngine;
 using Unity.Physics.Systems;
  
+//Temporary hack systems to fix the lack of FixedUpdate in ECS
+//Credits to Ivan 'Nothke' Notaroš for the hack
+
+//This system sets the fixedDeltaTime to the value of deltaTime so
+//the ECS physics (which are using fixedDeltaTime anyway) can be in sync with the ECS loop.
 [UpdateBefore(typeof(BuildPhysicsWorld))]
 public class PrePhysicsSetDeltaTimeSystem : ComponentSystem
 {
-    public bool isRealTimeStep = true;
+    public bool isRealTimeStep = true; //Change this to false to disable the hack
     public float timeScale = 1;
-    public float previousDeltaTime = Time.fixedDeltaTime;
+    public float originalFixedDeltaTime = Time.fixedDeltaTime;
  
     protected override void OnUpdate()
     {
-        previousDeltaTime = Time.fixedDeltaTime;
+        originalFixedDeltaTime = Time.fixedDeltaTime;
  
-        if (isRealTimeStep)
+        if (isRealTimeStep
+			&& Time.frameCount > 5)
             Time.fixedDeltaTime = Time.deltaTime * timeScale;
         else
             Time.fixedDeltaTime = Time.fixedDeltaTime * timeScale;
     }
 }
  
+//This system just puts the fixedDeltaTime back to its original value
 [UpdateAfter(typeof(ExportPhysicsWorld))]
 public class PostPhysicsResetDeltaTimeSystem : ComponentSystem
 {
@@ -32,6 +39,6 @@ public class PostPhysicsResetDeltaTimeSystem : ComponentSystem
  
     protected override void OnUpdate()
     {
-        Time.fixedDeltaTime = preSystem.previousDeltaTime;
+        Time.fixedDeltaTime = preSystem.originalFixedDeltaTime;
     }
 }

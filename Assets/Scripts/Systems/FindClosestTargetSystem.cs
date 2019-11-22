@@ -72,11 +72,11 @@ public class FindClosestTargetSystem : JobComponentSystem
 	{
 		float closestSqDistance = alertRange.Range * alertRange.Range;
 		
+		bool targetFound = false;
+		Entity target = Entity.Null;
+
 		for(int i=0; i<entities.Length; i++)
 		{
-			bool targetFound = false;
-			Entity target = Entity.Null;
-
 			//check the squared distance to this Player and see if it's under the closest one we already found
 			float currentSqDistance = math.lengthsq(positions[i].Value - translation.Value);
 			if(currentSqDistance < closestSqDistance)
@@ -84,15 +84,17 @@ public class FindClosestTargetSystem : JobComponentSystem
 				target = entities[i];
 				closestSqDistance = currentSqDistance;
 				targetFound = true;
-			}
-			
-			if(targetFound)
-				ECB.AddComponent<Target>(entityIndex, entity, new Target{ Entity = entities[i] });
+			}	
 		}
+
+		if(targetFound)
+			ECB.AddComponent<Target>(entityIndex, entity, new Target{ Entity = target });
 	}
 
-
-	struct CheckIfTargetInRangeJob : IJobForEachWithEntity<Target, AlertRange, Translation, MovementInput>
+	//This job checks if an Entity linked in Target has become invalid for some reason (destroyed, or has moved away).
+	//Excluding the DealBlow component means that an attacking Entity which is in the process of landing an attack won't lose its Target.
+	[ExcludeComponent(typeof(DealBlow))]
+	struct CheckIfTargetValidJob : IJobForEachWithEntity<Target, AlertRange, Translation, MovementInput>
 	{
 		[ReadOnly] public ComponentDataFromEntity<Translation> targetTranslations;
 		public EntityCommandBuffer.Concurrent ECB;
@@ -103,12 +105,22 @@ public class FindClosestTargetSystem : JobComponentSystem
 							[ReadOnly] ref Translation translation,
 							ref MovementInput movementInput)
 		{
+			//First we check if the Entity exists in the Translation data array.
+			//If not, it's dead and can be removed as the target
+			if(!targetTranslations.Exists(target.Entity))
+			{
+				ECB.RemoveComponent<Target>(index, entity);
+				movementInput.MoveAmount = float3.zero; //stops the entity
+				return;
+			}
+
+			//Then, we check the distance. If beyond the alertRange, the entity is too far
+			//In this case, an enemy would go into idle
 			float distanceSquared = math.lengthsq(targetTranslations[target.Entity].Value - translation.Value);
 			if(distanceSquared > alertRange.Range * alertRange.Range)
 			{
-				//target is too far, remove component
 				ECB.RemoveComponent<Target>(index, entity);
-				movementInput.MoveAmount = float3.zero; //stop the entity
+				movementInput.MoveAmount = float3.zero; //stops the entity
 			}
 		}
 	}
@@ -118,10 +130,16 @@ public class FindClosestTargetSystem : JobComponentSystem
 		//shared ECB between all jobs
 		EntityCommandBuffer.Concurrent ecb = endInitECBSystem.CreateCommandBuffer().ToConcurrent();
 
-		//all enemies finding the closest player
+		//Job 1
+		//First we run through all the enemies finding the closest player (generally there's only one).
+		//We prepare 2 NativeArrays: a reference to the players, and to their positions. This way enemies can run distance checks and note down which Entity is the closest player.
 		NativeArray<Entity> players = playersGroup.ToEntityArray(Allocator.TempJob, out JobHandle handle1);
 		NativeArray<Translation> playerPositions = playersGroup.ToComponentDataArray<Translation>(Allocator.TempJob, out JobHandle handle2);
-		inputDependencies = JobHandle.CombineDependencies(inputDependencies, handle1, handle2);
+		
+		//This code is running on the main thread but the 2 NativeArrays above are fetched in a job.
+		//This is why we combine the dependencies and pass them all to the job when we schedule it (see below), to ensure that all the data is ready at the moment the job is launched.
+		//For more info: https://gametorrahod.com/minimum-main-thread-block-with-out-jobhandle-overload/ (first section)
+		JobHandle newInputDependencies = JobHandle.CombineDependencies(inputDependencies, handle1, handle2);
 
 		var job1 = new FindClosestPlayerJob()
 		{
@@ -130,13 +148,16 @@ public class FindClosestTargetSystem : JobComponentSystem
 			ECB = ecb,
 		};
 
-		JobHandle job1Handle = job1.Schedule(this, inputDependencies);
+		JobHandle job1Handle = job1.Schedule(this, newInputDependencies);
 
-
-		//all players finding the closest enemy
+		//Job 2
+		//Now iterating through the players (only one) finding the closest enemy.
+		//We prepare the NativeArrays like in the job above.
 		NativeArray<Entity> enemies = enemyGroup.ToEntityArray(Allocator.TempJob, out JobHandle handle3);
 		NativeArray<Translation> enemyPositions = enemyGroup.ToComponentDataArray<Translation>(Allocator.TempJob, out JobHandle handle4);
-		job1Handle = JobHandle.CombineDependencies(job1Handle, handle3, handle4);
+		
+		//Again, we combine dependencies to make sure that job1 is run as well as the fetching of the 2 NativeArrays, before running job2
+		JobHandle job1Dependencies = JobHandle.CombineDependencies(job1Handle, handle3, handle4);
 
 		var job2 = new FindClosestEnemyJob()
 		{
@@ -145,12 +166,12 @@ public class FindClosestTargetSystem : JobComponentSystem
 			ECB = ecb,
 		};
 
-		JobHandle job2Handle = job2.Schedule(this, job1Handle);
+		JobHandle job2Handle = job2.Schedule(this, job1Dependencies);
 		endInitECBSystem.AddJobHandleForProducer(job2Handle);
 
-
-		//all units, check if the target is still in range
-		var job3 = new CheckIfTargetInRangeJob()
+		//Job 3
+		//All characters already with a Target but not currently dealing an attack, check if the target is still in range or dead.
+		var job3 = new CheckIfTargetValidJob()
 		{
 			ECB = ecb,
 			targetTranslations = GetComponentDataFromEntity<Translation>(true),

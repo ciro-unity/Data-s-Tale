@@ -1,12 +1,11 @@
-﻿using Unity.Burst;
-using Unity.Collections;
+﻿using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
 using UnityEngine;
-using Unity.Mathematics;
-using Unity.Transforms;
-using static Unity.Mathematics.math;
 
+//This system resolves attacks, dealing the intended damage to the Target entity.
+//Damage entries are added to a DynamicBuffer, so it's possible that an entity receives multiple damage
+//from different attackers in the same frame.
 [UpdateAfter(typeof(AttackSystem))]
 public class ResolveAttacksSystem : JobComponentSystem
 {
@@ -17,6 +16,7 @@ public class ResolveAttacksSystem : JobComponentSystem
         EndSimECBSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
 	}
 
+	//This job finds all of the attackers that have a DealBlow component pending, and applies the damage to the target
     struct ResolveAttackJob : IJobForEachWithEntity<Target, DealBlow>
     {
         public EntityCommandBuffer ECB;
@@ -32,7 +32,7 @@ public class ResolveAttacksSystem : JobComponentSystem
 			{
 				if(damages.Exists(target.Entity))
 				{
-					damages[target.Entity].Add(new Damage{ Amount = dealBlow.DamageAmount });
+					damages[target.Entity].Add(new Damage{ Amount = dealBlow.DamageAmount }); //Add element to the DynamicBuffer
 				}
 
 				ECB.RemoveComponent<DealBlow>(entity);
@@ -42,10 +42,13 @@ public class ResolveAttacksSystem : JobComponentSystem
     
     protected override JobHandle OnUpdate(JobHandle inputDependencies)
     {
-        var job = new ResolveAttackJob();
-		job.currentTime = Time.time;
-		job.ECB = EndSimECBSystem.CreateCommandBuffer();
-		job.damages = GetBufferFromEntity<Damage>(false);
+		//Job 1
+        var job = new ResolveAttackJob()
+		{
+			currentTime = Time.time,
+			ECB = EndSimECBSystem.CreateCommandBuffer(),
+			damages = GetBufferFromEntity<Damage>(false),
+		};
 
 		//This job is writing to different buffers of Damage data of different entities.
 		//Since we can't predict the order of write operations, this job is scheduled on a single thread.
