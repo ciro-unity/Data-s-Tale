@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 2730538954176911862}
   - component: {fileID: 2146354850186406831}
   - component: {fileID: 1974960060122040584}
-  - component: {fileID: 3670532560675734340}
+  - component: {fileID: 8594024298772163561}
   m_Layer: 0
   m_Name: 8fd0fad6c8b4f45a88552300a834e23b_0_shared
   m_TagString: Untagged
@@ -287,7 +287,7 @@ MonoBehaviour:
     layer: 0
     castShadows: 1
     receiveShadows: 1
---- !u!114 &3670532560675734340
+--- !u!114 &8594024298772163561
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
