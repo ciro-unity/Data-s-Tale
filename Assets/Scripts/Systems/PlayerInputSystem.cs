@@ -95,7 +95,9 @@ public class PlayerInputSystem : ComponentSystem, Player1InputActions.IPlayerAct
 	public void OnFire(InputAction.CallbackContext context)
 	{
 		//Debug.Log("OnFire " + context.performed);
-
-		attackInput = context.performed;
+		if(context.phase == InputActionPhase.Performed)
+		{
+			attackInput = context.performed;
+		}
 	}
 }

@@ -21,6 +21,7 @@ public class CollectableSystem : JobComponentSystem
         EndSimECBSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
 	}
 
+	[ExcludeComponent(typeof(Busy))]
     struct AttractCollectableJob : IJobForEachWithEntity<Translation, Collectable>
     {
 		//Incoming data for the Player entity
@@ -62,7 +63,8 @@ public class CollectableSystem : JobComponentSystem
 
 		//Fetch data about the Player character to be used for distance calculations and more
 		//Note: this system assumes there's only one Player. If more than one exists, you will see errors pop up
-		Translation playerTranslationComp = EntityManager.GetComponentData<Translation>(GetSingletonEntity<PlayerTag>());
+		Entity playerEntity = GetSingletonEntity<PlayerTag>();
+		Translation playerTranslationComp = EntityManager.GetComponentData<Translation>(playerEntity);
 
 		//The sub-jobs will store all of the scores coming from collectables in one list
 		NativeList<int> playerScoreList = new NativeList<int>(Allocator.TempJob);
@@ -83,13 +85,18 @@ public class CollectableSystem : JobComponentSystem
 		//We ensure that the job is complete, before we read back the value of the all the scores in the list.
 		handle1.Complete();
 
-		//Iterate the NativeList and gather all the scores coming from the collectables picked up on this frame.
-		int totalScore = EntityManager.GetComponentData<Score>(GetSingletonEntity<PlayerTag>()).Value;
-		for(int i=0; i<playerScoreList.Length; i++)
+		if(playerScoreList.Length != 0)
 		{
-			totalScore += playerScoreList[i];
+			int totalScore = EntityManager.GetComponentData<Score>(playerEntity).Value;
+			
+			//Iterate the NativeList and gather all the scores coming from the collectables picked up on this frame.
+			for(int i=0; i<playerScoreList.Length; i++)
+			{
+				totalScore += playerScoreList[i];
+			}
+			EntityManager.SetComponentData<Score>(playerEntity, new Score{ Value = totalScore});
+			EntityManager.AddComponent<UpdateScoreUI>(playerEntity); //will trigger the query in the UISystem that updates the score UI
 		}
-		EntityManager.SetComponentData<Score>(GetSingletonEntity<PlayerTag>(), new Score{ Value = totalScore});
 		playerScoreList.Dispose();
 
         return handle1;

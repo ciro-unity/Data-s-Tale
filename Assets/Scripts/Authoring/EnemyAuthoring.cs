@@ -2,10 +2,11 @@
 using Unity.Mathematics;
 using UnityEngine;
 using Unity.Transforms;
+using System.Collections.Generic;
 
 [DisallowMultipleComponent]
 [RequiresEntityConversion]
-public class EnemyAuthoring : MonoBehaviour, IConvertGameObjectToEntity
+public class EnemyAuthoring : MonoBehaviour, IConvertGameObjectToEntity, IDeclareReferencedPrefabs
 {
 	public float speed = .1f;
 	public int initialHealth = 50;
@@ -13,6 +14,7 @@ public class EnemyAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 	public float seekRange = 10f;
 	public float attackRange = 2f;
 	public AnimationClip attackClip;
+	public GameObject drop;
 	
 	private Entity entityReference;
 	private Animator animator;
@@ -46,11 +48,19 @@ public class EnemyAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
 		dstManager.AddComponentData(entity, new MovementInput { MoveAmount = new float3() });
 		dstManager.AddComponentData(entity, new Speed { Value = speed });
-		float atkAnimLength = attackClip.length;
+		float atkAnimLength = attackClip.length; //extract the length of the animationClip so we can make the entity Busy later on
 		dstManager.AddComponentData(entity, new AttackInput { Attack = false, AttackLength = atkAnimLength, AttackStrength = attackStrength });
 		dstManager.AddComponentData(entity, new AlertRange { Range = seekRange });
 		dstManager.AddComponentData(entity, new AttackRange { Range = attackRange } );
 		dstManager.AddComponentData(entity, new Health { Current = initialHealth, FullHealth = initialHealth });
 		dstManager.AddBuffer<Damage>(entity);
+		if(drop != null) dstManager.AddComponentData<Droppable>(entity, new Droppable{ Drop = conversionSystem.GetPrimaryEntity(drop) });
     }
+
+	//This function will "subscribe" the gameObject (a Prefab) into a conversion mechanism
+	//which allows, during ECS gameplay, to instantiate the entity that was created out of this Prefab during conversion
+	public void DeclareReferencedPrefabs(List<GameObject> gameObjects)
+	{
+		gameObjects.Add(drop);
+	}
 }
